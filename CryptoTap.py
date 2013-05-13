@@ -31,11 +31,13 @@ def send_coins():
 
 class chat:
 	def GET(self):
-		return web.template.frender('chat.html')
+		render = web.template.frender('chat.html')
+		return render()
 
 class resources:
 	def GET(self):
-		return web.template.frender('resources.html')
+		render = web.template.frender('resources.html')
+		return render()
 
 class add:
 	"""Takes add POST request, and redirects to relevant page"""

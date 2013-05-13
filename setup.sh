@@ -8,8 +8,8 @@ git clone https://github.com/super3/CryptoTap.git
 
 cd ~/terracoin/src
 make -f makefile.unix terracoind
-echo "rpcuser=trcfaucet1" >> /root/.terracoin/terracoin.conf
-echo "rpcpassword=R&0&Jij0YHBW2&g6zGn5zwiTpY8$7yd%q4Gm" >> /root/.terracoin/terracoin.conf
+echo "rpcuser=trcfaucet2" >> ~/.terracoin/terracoin.conf
+echo "rpcpassword=R&0&Jij0YHBW2&g6zGn5zwiTpfeadyd%q4Gm" >> ~/.terracoin/terracoin.conf
 
 cp terracoind ~/CryptoTap
 cd ~/CryptoTap
