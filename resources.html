@@ -1,5 +1,3 @@
-$def with (recent, form_submit, captcha, captcha_awns)
-
 <!DOCTYPE html>
 <!--[if IE 8]> <html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -8,7 +6,7 @@ $def with (recent, form_submit, captcha, captcha_awns)
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width" />
 	<link rel="shortcut icon" type="image/x-icon" href="static/img/favicon.ico" />
-	<title>Terracoin(TRC) Faucet</title>
+	<title>Terracoin(TRC) Faucet - Resources</title>
 
 	<link rel="stylesheet" href="static/css/normalize.css" />
 	<link rel="stylesheet" href="static/css/foundation.css" />
@@ -59,114 +57,67 @@ $def with (recent, form_submit, captcha, captcha_awns)
 
 	<div class="row">
 		<div class="large-8 columns">
-
-			$if form_submit == "good":
-				<div data-alert class="alert-box">
-					You have been added! Our server will send your Terracoin in the next 5 minutes.
-					<a href="#" class="close">&times;</a>
-				</div>
-			$elif form_submit == "bad":
-				<div data-alert class="alert-box alert">
-					Invalid Terracoin Address or Captcha! Please try again.
-					<a href="#" class="close">&times;</a>
-				</div>
-			$elif form_submit == "duplicate":
-				<div data-alert class="alert-box alert">
-					Too many coins have been sent using this IP or Terracoin address.
-					<a href="#" class="close">&times;</a>
-				</div>
-
-			<h3>What is Terracoin?</h3>
-			<p>
-				<a href="http://terracoin.com">Terracoin</a> (TRC) is a digital currency, based on <a href="http://bitcoin.org">Bitcoin</a>. It operates on a peer to peer
-				network, the same technology behind <a href="http://www.skype.com/">Skype</a> and <a href="http://www.bittorrent.com/">BitTorrent</a>.
-				Futhermore, Terracoin is completely decentralized, meaning it is not controlled by any government or central bank.
-			 </p>
-
-			<h3>Get Free Terracoins</h3>
-			<p>
-				No gimmicks or tricks. We want you to try Terracoin out, so just put in a Terracoin address, and we will send you some! 
-				Currently, this faucet pays out <b>every 5 minutes</b>. You may submit up to 3 times, and use coupons to get higher payouts. 
-			</p>
-	
-			<form method="post" action="add">
-				<fieldset>
-					<legend>Request Form</legend>
-
-					<div class="row">
-						<div class="large-12 columns">
-							<label>Terracoin Address</label>
-							<input name="address" type="text" placeholder="ex. 14kBtNP5NfCFTFvn6jsEL6TUg8hVBehwYx">
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="large-6 columns">
-							<label>Coupon</label>
-							<input type="text" name="coupon" placeholder="Secret code for more coins. Optional.">
-						</div>
-						<div class="large-6 columns">
-							<div class="row collapse">
-								<label>Captcha</label>
-									<div class="small-3 columns">
-									<span class="prefix">
-										$captcha[0]+$captcha[1]=?
-									</span>
-								</div>
-								<div class="small-9 columns">
-									<input type="text" name="captcha" placeholder="Solve the math problem.">
-									<input type="hidden" name="captcha_awns" value="$captcha_awns" />
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="large-12 columns center">
-							<p><input type="submit" class="success button give" value="Give Me Free Terracoins!"/></p>
-							<script type="text/javascript" src="http://puppytwist.com/api/script.php?p=296&c=no_adult&a=text"></script>
-						</div>
-
-					</div>
-				</fieldset>
-			</form>
 			
+			<div>			
 
-			<h3>Recent Drips</h3>
+<div>
+<h3>Trading</h3>
+<p>
+ <a href="https://vircurex.com/welcome/index?referral_id=909-21547" title="Vircurex exchange">Vircurex</a> : Terracoin Trading.<br>
+ <a href="https://btc-e.com/" title="BTC-e Terracoin trading">BTC-e</a> : Terracoin Trading<br>
+ <a href="http://exchange.zapto.org/" title="Cryptocoin exchange">CryptoCoin Exchange</a> : Terracoin Trading<br>
+ <a href="http://bter.com/" title="Bitcoin Exchange Platform">Bitcoin Exchange Platform</a> : Terracoin Trading<br>
 
-			<div class="row">
-				<div class="large-12 columns">
-					<table>
-						<thead>
-							<tr>
-								<th width="200">Time</th>
-								<th>IP Address</th>
-								<th width="300">Transaction ID</th>
-							</tr>
-						</thead>
-						<tbody>
-							$for i in recent:
-								<tr>
-									<td>
-										$i[1]
-									</td>
-									<td>
-										$i[2]
-									</td>
-									<td>
-										$if i[5] == "UNSENT":
-											Processing...
-										$else:
-											<a href="http://cryptocoinexplorer.com:3750/tx/$i[5]">
-											$i[5][:40]...
-											</a>
-									</td>
-								</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
+ 
+</p>
+</div>
 
+<div>
+ <h3>Mining pools</h3>
+ <p>
+  <a href="http://www.coinotron.com/" title="coinotron mining pool">Coinotron</a> : 2 / 5 % fees, pps/rbpps (Launched on Nov 7 2012)<br>
+  <a href="https://www.multipool.in/" title="multipool mining pool">Multipool</a> : 1 % fees + 0.005 TRC per withdrawal, pplns (Launched on March 2013))<br>
+  <a href="https://en.bitcoin.it/wiki/P2Pool" title="p2pool wiki page">P2Pool</a> : Mining with no registration<br>
+  <a href="http://trc.vpool.us/" title="vPool TRC">vPool</a> : 1% fees, PPLNS (Launched on Mar 25 2013)
+ </p>
+</div>
+
+<div>
+ <h3>Gambling / gaming</h3>
+ <script type="text/javascript" src="http://puppytwist.com/api/script.php?p=296&c=no_adult&a=text"></script>
+ <p>
+  <a href="http://crypto-games.us/" title="Cryptogames">SatoshiDice for Terracoins</a><br>
+  <a href="http://diceoncrack.com/" title="DiceOnCrack">Terracoin Lottery</a><br>
+  <a href="http://greenishblue.info/terradice/" title="Terradice">TerraDice</a>
+ </p>
+</div>
+
+<div>
+ <h3>News / discussion forum</h3>
+ <p>
+  <a href="http://www.reddit.com/r/terracoin" title="Terracoin reddit">Terracoin Reddit</a><br>
+  <a href="http://www.terracointalk.org/" title="TerracoinTalk forum">Terracointalk Forum</a>
+ </p>
+</div>
+
+<div>
+<h3>Statistics / Technical</h3>
+<p>
+ <a href="http://cryptocoinexplorer.com:3750/" title="blockchain explorer">cryptocoinexplorer</a> : Blockchain Explorer<br>
+ <a href="http://silverthreadsoftware.com/bitcoin/vanity/" title="vanity address generator">vanity address</a> : Vanity Address Generator
+</p>
+</div>
+
+<div>
+<h3>Hosted wallets</h3>
+<p>
+ <a href="http://www.terrawallet.com/" title="Web wallet">TerraWallet</a> : Web Wallet.<br>
+ <a href="http://terracoin.info/" title="terracoin address generator">terracoin.info</a> : Terracoin Wallet Generator
+</p>
+</div>
+
+
+</div>
 		</div>
 
 		<div class="large-4 columns">

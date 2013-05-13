@@ -9,12 +9,14 @@ urls = (
 	'/good', 'good',
 	'/bad', 'bad',
 	'/duplicate', 'duplicate',
-	'/send', 'send'
+	'/send', 'send',
+	'/chat', 'chat',
+	'/resources', 'resources'
 )
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
-	render = web.template.frender('templates/index.html')
+	render = web.template.frender('index.html')
 	captcha = (random.randrange(1, 15), random.randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database('test.db', 'drip_request').get_recent()
@@ -26,6 +28,14 @@ def send_coins():
 	for i in data.get_unsent():
 		print(DripRequest(i[1], i[3], i[4], i[2], i[0]))
 		DripRequest(i[1], i[3], i[4], i[2], i[0]).send(0.001)
+
+class chat:
+	def GET(self):
+		return web.template.frender('chat.html')
+
+class resources:
+	def GET(self):
+		return web.template.frender('resources.html')
 
 class add:
 	"""Takes add POST request, and redirects to relevant page"""
