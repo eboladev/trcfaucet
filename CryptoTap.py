@@ -27,16 +27,18 @@ def send_coins():
 	data = Database('test.db', 'drip_request')
 	for i in data.get_unsent():
 		print(DripRequest(i[1], i[3], i[4], i[2], i[0]))
-		DripRequest(i[1], i[3], i[4], i[2], i[0]).send(0.001)
+		DripRequest(i[1], i[3], i[4], i[2], i[0]).send(0.0001)
 
 class chat:
 	def GET(self):
 		render = web.template.frender('chat.html')
+		print(render)
 		return render()
 
 class resources:
 	def GET(self):
 		render = web.template.frender('resources.html')
+		print("resources")
 		return render()
 
 class add:
