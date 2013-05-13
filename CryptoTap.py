@@ -14,7 +14,7 @@ urls = (
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
-	render = web.template.frender('index.html')
+	render = web.template.frender('templates/index.html')
 	captcha = (random.randrange(1, 15), random.randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database('test.db', 'drip_request').get_recent()

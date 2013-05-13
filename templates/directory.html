@@ -15,10 +15,10 @@ $def with (recent, form_submit, captcha, captcha_awns)
 	<style type="text/css">
 		.header {
 			height: 75px; 
-			text-align:center;
-			background-image:url('static/img/globe.png');
+			text-align: center;
+			background-image: url('static/img/globe.png');
 			border-bottom: 1px #DDDDDD solid;
-			background-repeat:no-repeat;
+			background-repeat: no-repeat;
 			margin-bottom: 15px;
 			background-position:20px 0px;"
 		}
@@ -27,6 +27,7 @@ $def with (recent, form_submit, captcha, captcha_awns)
 			margin-bottom: 0px;
 		}
 		.shift { padding-left:20px; }
+		.center { text-align: center; }
 	</style>
 	
 	<script src="static/js/vendor/custom.modernizr.js"></script>
@@ -44,7 +45,8 @@ $def with (recent, form_submit, captcha, captcha_awns)
 		<section class="top-bar-section">
 			<!-- Right Nav Section -->
 			<ul class="right">
-				<li><a href="#">Drip History (Coming Soon)</a></li>
+				<li><a href="#">Chat / Help</a></li>
+				<li><a href="#">Resources</a></li>
 			</ul>
 		</section>
 	</nav>
@@ -60,7 +62,7 @@ $def with (recent, form_submit, captcha, captcha_awns)
 
 			$if form_submit == "good":
 				<div data-alert class="alert-box">
-					You have been added! Our server will send your Terracoin in the next 15 minutes.
+					You have been added! Our server will send your Terracoin in the next 5 minutes.
 					<a href="#" class="close">&times;</a>
 				</div>
 			$elif form_submit == "bad":
@@ -74,14 +76,18 @@ $def with (recent, form_submit, captcha, captcha_awns)
 					<a href="#" class="close">&times;</a>
 				</div>
 
-			<h3>Getting Started</h3>
+			<h3>What is Terracoin?</h3>
 			<p>
-				Want to play around with a newfangled cryptocurrency, like <a href="http://bitcoin.org">Bitcoin</a>, 
-				without mining or paying money? Just put in a Terracoin address, and we will send you some! Currently,
-				this faucet pays out every <b>15 minutes.</b>
+				<a href="http://terracoin.com">Terracoin</a> (TRC) is a digital currency, based on <a href="http://bitcoin.org">Bitcoin</a>. It operates on a peer to peer
+				network, the same technology behind <a href="http://www.skype.com/">Skype</a> and <a href="http://www.bittorrent.com/">BitTorrent</a>.
+				Futhermore, Terracoin is completely decentralized, meaning it is not controlled by any government or central bank.
 			 </p>
 
-			<h3>Free Terracoins</h3>
+			<h3>Get Free Terracoins</h3>
+			<p>
+				No gimmicks or tricks. We want you to try Terracoin out, so just put in a Terracoin address, and we will send you some! 
+				Currently, this faucet pays out <b>every 5 minutes</b>. You may submit up to 3 times, and use coupons to get higher payouts. 
+			</p>
 	
 			<form method="post" action="add">
 				<fieldset>
@@ -116,9 +122,11 @@ $def with (recent, form_submit, captcha, captcha_awns)
 					</div>
 
 					<div class="row">
-						<div class="large-12 columns">
+						<div class="large-12 columns center">
 							<p><input type="submit" class="success button give" value="Give Me Free Terracoins!"/></p>
+							<script type="text/javascript" src="http://puppytwist.com/api/script.php?p=296&c=no_adult&a=text"></script>
 						</div>
+
 					</div>
 				</fieldset>
 			</form>
@@ -162,20 +170,27 @@ $def with (recent, form_submit, captcha, captcha_awns)
 		</div>
 
 		<div class="large-4 columns">
-			<h4>What are Terracoins?</h4>
-			<p>Terracoin (TRC) is a person to person digital currency. It shares many similarities to Bitcoin in that it utilizes the SHA 256 algorithm and relies on the concepts outlined in Satoshi's white paper. Terracoin originated in late 2012 after a series of difficulties arose in other digital currencies. There will only be 42 million Terracoin produced. </p>
+			<h4>Getting Started</h4>
+			<p><a href="https://sourceforge.net/projects/terracoin/files/latest/download" class="success button give">Download a Terracoin Wallet</a></p>
+			<p><a href="http://cryptojunky.com/blog/2013/02/23/getting-started-with-terracoin-2/" class="success button give">Read the Beginners Guide</a></p>
+			<p><a href="/resources" class="success button give">Spend and Trade Terracoin</a></p>
+
+			<h4>Donations</h4>
+			<p style="font-size:small;">
+				We rely on your donations to keep the faucet and this site running. Even a small donation helps.<br/>
+				<br/><b>TRC:</b> 1EAo9oBFKQXBzChnX4jJQ2DKCTeTe8iZHr
+				<br/><b>BTC:</b> 1DZ5XxwaGkrhC8E1zCrmB5Yahk46DSDhiE
+			</p>
 
 			<h4>Resources</h4>
 			<p>
-				Want some more info about Terracoin? Check out 
-				<a href="http://cryptojunky.com/blog/2013/02/23/getting-started-with-terracoin-2/">the getting start guide</a> 
-				or some of the resources below: </p>
+				Want some help or some places to buy some Terracoin? Here you are:
 				
 				<ul class="disc shift">
+					<li><a href="https://vircurex.com/welcome/index?referral_id=909-21547">Vircurex Exchange</a><br />Buy and sell Terracoins.</li>
 					<li><a href="http://terracoin.org/">Terracoin</a><br />The official Terracoin website.</li>
 					<li><a href="http://terracointalk.org/">Terracoin Talk</a><br />The official Terracoin forum.</li>
 					<li><a href="http://www.reddit.com/r/Terracoin/">/r/Terracoin</a><br />A great place for Terracoin newbiews to ask questions.</li>
-					<li><a href="https://vircurex.com/welcome/index?alt=usd&base=trc&locale=en">Vircurex Exchange</a><br />Buy and sell Terracoins. Also the best place to see the current exchange rate. </li>
 				</ul>
 		</div>
 	</div>
