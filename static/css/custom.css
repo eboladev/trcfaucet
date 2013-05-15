@@ -17,3 +17,5 @@
 .time { width: 150px; }
 .ip { width: 200px; }
 .transid { width: 300px; }
+
+@media only screen and (min-width: 1168px) {}
