@@ -1,17 +1,24 @@
 apt-get update
 apt-get -y install build-essential libboost-all-dev libssl-dev libdb-dev libdb4.8++-dev libglib2.0-dev
+apt-get update
 apt-get -y install git apt-file python3 python-webpy 
 apt-get update
 
 git clone https://github.com/terracoin/terracoin.git
-git clone https://github.com/super3/CryptoTap.git
-
 cd ~/terracoin/src
 make -f makefile.unix terracoind
-echo "rpcuser=trcfaucet2" >> ~/.terracoin/terracoin.conf
-echo "rpcpassword=R&0&Jij0YHBW2&g6zGn5zwiTpfeadyd%q4Gm" >> ~/.terracoin/terracoin.conf
+cp elacoind /usr/bin/elacoind
 
-cp terracoind ~/CryptoTap
+mkdir /root/.terracoin/
+echo "rpcuser=CHANGETHIS" >> /root/.terracoin/terracoin.conf
+echo "rpcpassword=CHANGETHIS" >> /root/.terracoin/terracoin.conf
+
+terracoind -daemon
+terracoind getinfo
+terracoind getbalance
+sleep 5
+
+cd ~/
+git clone https://github.com/super3/CryptoTap.git
 cd ~/CryptoTap
-./terracoind -daemon
 python CryptoTap.py 80

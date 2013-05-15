@@ -11,6 +11,8 @@ import string
 import sqlite3
 import commands
 
+COIN_NAME = "TRC"
+COIN_CLIENT = "terracoind"
 
 # Hard Coded Coupons
 def lookup_coupon(coupon):
@@ -81,7 +83,8 @@ class Database:
 
 	def get_html(self, save_time, ip, trans_id):
 		html = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>"
-		return html.format(save_time, ip, trans_id)
+		obfuscated_ip = ''.join(map(str, self.sub_cypher(list(ip), 655)))
+		return html.format(save_time, obfuscated_ip, trans_id)
 
 	def insert(self, crdate, ip, address, coupon, trans_id):
 		text = "INSERT INTO {0} (id, crdate, ip, address, coupon, trans_id)"
@@ -98,6 +101,10 @@ class Database:
 		text = "SELECT * FROM {0} WHERE trans_id = '{1}'"
 		return self.query(text.format(self.sql_table, "UNSENT"))
 
+	# Security
+	def sub_cypher(num, offset):
+		"""Number substitution offset cypher. Don't use offset values 0-9."""
+		return [(abs(int(x) - offset)%10) for x in num if x.isdigit()]
 
 class DripValidate:
 	def __init__(self):
@@ -191,7 +198,11 @@ class DripRequest:
 		else:
 			raise LookupError
 
-	def send(self, amount):
+	def get_balance(self):
+		"Retrieves the current balance. "
+		return commands.getstatusoutput('{0} getbalance')[1]
+
+	def send(self, amount, data):
 		"""
 		Send the specified amount to the drip request, time whatever the
 		coupon code specifies. Uses the following unix command to do so:
@@ -203,17 +214,16 @@ class DripRequest:
 		amount *= lookup_coupon(self.coupon)
 		 # hardcoded limit at 0.1 TRC in case the coupon system breaks
 		if amount > 0.1: amount = 0.1
-		command = './terracoind sendtoaddress {0} {1}'
-		command = command.format(self.address, str(amount))
+		command = '{0} sendtoaddress {1} {2}'
+		command = command.format(COIN_CLIENT, self.address, str(amount))
 		trans_id = commands.getstatusoutput(command)[1]
 		
 		# Send Payment
-		data = Database('test.db', 'drip_request')
 		data.update_drip(self.drip_id, trans_id)
 
 		# Console Message
-		con_message = "Sent {0} TRC to {1}. Traction ID: {2}"
-		print(con_message.format(str(amount), self.address, trans_id))
+		con_message = "Sent {0} {1} to {2}. Traction ID: {3}"
+		return con_message.format(str(amount), COIN_NAME, self.address, trans_id)
 
 
 # Unit Tests
@@ -250,10 +260,6 @@ def drip_unit_test():
 	drip2 = DripRequest('today', '1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa',
 						'', '171.247.220.64')
 	drip2.save()
-
-def get_html_recent():
-	data = Database('test.db', 'drip_request')
-	return data.get_recent()
 
 # Main
 if __name__ == "__main__":
