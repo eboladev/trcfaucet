@@ -12,24 +12,8 @@ $def with (recent, form_submit, captcha, captcha_awns)
 
 	<link rel="stylesheet" href="static/css/normalize.css" />
 	<link rel="stylesheet" href="static/css/foundation.css" />
-	<style type="text/css">
-		.header {
-			height: 75px; 
-			text-align: center;
-			background-image: url('static/img/globe.png');
-			border-bottom: 1px #DDDDDD solid;
-			background-repeat: no-repeat;
-			margin-bottom: 15px;
-			background-position:20px 0px;"
-		}
-		.give {
-			width:100%; 
-			margin-bottom: 0px;
-		}
-		.shift { padding-left:20px; }
-		.center { text-align: center; }
-	</style>
-	
+	<link rel="stylesheet" href="static/css/custom.css" />
+
 	<script src="static/js/vendor/custom.modernizr.js"></script>
 </head>
 
@@ -37,6 +21,7 @@ $def with (recent, form_submit, captcha, captcha_awns)
 	<nav class="top-bar">
 		<ul class="title-area">
 			<!-- Title Area -->
+			<li class="divider hide-for-small"></li>
 			<li class="name">
 				<h1><a href="/">Terracoin(TRC) Faucet</a></h1>
 			</li>
@@ -52,7 +37,7 @@ $def with (recent, form_submit, captcha, captcha_awns)
 	</nav>
 
 	<div class="row">
-		<div class="large-12 columns header">
+		<div class="large-12 columns header" style="background-image: url('static/img/globe.png');">
 			<h2>Welcome to Terracoin(TRC) Faucet</h2>
 		</div>
 	</div>
@@ -139,9 +124,9 @@ $def with (recent, form_submit, captcha, captcha_awns)
 					<table>
 						<thead>
 							<tr>
-								<th style="width:200px;">Time</th>
-								<th>IP Address</th>
-								<th style="width:300px;">Transaction ID</th>
+								<th class="time">Time</th>
+								<th class="ip">IP Address</th>
+								<th class="transid">Transaction ID</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -176,7 +161,7 @@ $def with (recent, form_submit, captcha, captcha_awns)
 			<p><a href="/resources" class="success button give">Spend and Trade Terracoin</a></p>
 
 			<h4>Donations</h4>
-			<p style="font-size:small;">
+			<p class="donations">
 				We rely on your donations to keep the faucet and this site running. Even a small donation helps.<br/>
 				<br/><b>TRC:</b> 1EAo9oBFKQXBzChnX4jJQ2DKCTeTe8iZHr
 				<br/><b>BTC:</b> 1DZ5XxwaGkrhC8E1zCrmB5Yahk46DSDhiE

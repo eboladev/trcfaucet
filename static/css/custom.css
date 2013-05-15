@@ -1,0 +1,19 @@
+.header {
+	height: 75px; 
+	text-align: center;
+	border-bottom: 1px #DDDDDD solid;
+	background-repeat: no-repeat;
+	margin-bottom: 15px;
+	background-position:20px 0px;"
+}
+.give {
+	width:100%; 
+	margin-bottom: 0px;
+}
+.shift { padding-left:20px; }
+.center { text-align: center; }
+.donations { font-size:small; }
+
+.time { width: 150px; }
+.ip { width: 200px; }
+.transid { width: 300px; }
