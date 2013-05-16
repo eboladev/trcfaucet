@@ -2,6 +2,7 @@
 	height: 75px; 
 	text-align: center;
 	border-bottom: 1px #DDDDDD solid;
+	background-image: url('static/img/globe.png');
 	background-repeat: no-repeat;
 	margin-bottom: 15px;
 	background-position:20px 0px;"

@@ -1,4 +1,3 @@
-import datetime
 from flask import Flask
 from flask import request
 from DripRequest import *
@@ -65,7 +64,6 @@ def index(): return get_index()
 @app.route('/add', methods=['POST'])
 def add(): 
 	ip = str(request.remote_addr)
-	now = str(datetime.datetime.now())
 	try:
 		if request.form['captcha'] != request.form['captcha_awns']: 
 			raise ValueError

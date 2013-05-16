@@ -52,7 +52,7 @@ class Database:
 		text += "coupon TEXT(25),trans_id TEXT(25),PRIMARY KEY (id))"
 		self.command(text)
 		# Insert First Row
-		ti = "bf9433692129d60f10f47d391c5b8435fc3852d0cd7c1f19db62403c5df89b3f"
+		ti = 
 		self.insert("Faucet Start", "69.87.160.3",
 				    "1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa", "DOUBLEMONEY", ti)
 
@@ -85,7 +85,7 @@ class Database:
 	def insert(self, crdate, ip, address, coupon, trans_id):
 		text = "INSERT INTO {0} (id, crdate, ip, address, coupon, trans_id)"
 		text = text.format(self.sql_table)
-		text += "VALUES (NULL,'{0}','{1}','{2}','{3}','{4}')"
+		text += "VALUES (NULL, date('now'),'{1}','{2}','{3}','{4}')"
 		self.command(text.format(crdate, ip, address, coupon, trans_id))
 
 	# Get Methods

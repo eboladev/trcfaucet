@@ -7,7 +7,7 @@ apt-get update
 git clone https://github.com/terracoin/terracoin.git
 cd ~/terracoin/src
 make -f makefile.unix terracoind
-cp elacoind /usr/bin/elacoind
+cp terracoind /usr/bin/terracoind
 
 mkdir /root/.terracoin/
 echo "rpcuser=CHANGETHIS" >> /root/.terracoin/terracoin.conf
