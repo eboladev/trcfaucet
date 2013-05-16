@@ -33,7 +33,7 @@ def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
 	diff_time = datetime.now() - datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
 	diff_time = divmod(diff_time.seconds, 60)
-	diff_time = "{0} minutes, {1} seconds ago".format(diff_time[0], diff_time[1])
+	diff_time = "{0} mins, {1} secs ago".format(diff_time[0], diff_time[1])
 	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 655)))
 	if trans_id == "UNSENT":
 		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
@@ -75,7 +75,7 @@ def add():
 			raise ValueError
 		print("Good drip request. Saving to database...")
 		data = Database(DATABASE_FILE, DATABASE_TABLE)
-		DripRequest(now, request.form['address'], request.form['coupon'],
+		DripRequest(request.form['address'], request.form['coupon'],
 				    ip).save(data)
 		return redirect('/good')
 	except ValueError:

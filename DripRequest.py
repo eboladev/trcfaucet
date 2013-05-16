@@ -160,7 +160,7 @@ class DripRequest:
 	drip_id -- The database id of the drip request.
 	
 	"""
-	def __init__(self, date, address, coupon, ip, drip_id = 0):
+	def __init__(self, address, coupon, ip, drip_id = 0):
 		vall = DripValidate()
 		if not vall.validate_address(str(address)): 
 			raise ValueError("Invalid Terracoin Address.")
