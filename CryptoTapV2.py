@@ -37,7 +37,7 @@ def get_index(form_submit_status = None):
 	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
 	recent = ''.join(map(str, recent_drips_html))
 	# $def with (recent, form_submit, captcha, captcha_awns)
-	return render_template('index.html', recent=recent, form_submit=form_submit,
+	return render_template('index.html', recent=recent, form_submit=form_submit_status,
 						   captcha=captcha, captcha_awns=captcha_awns)
 
 def send_coins():
