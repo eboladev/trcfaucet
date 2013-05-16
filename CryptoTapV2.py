@@ -98,7 +98,7 @@ def chat(): return render_template('chat.html')
 def resources(): return render_template('resources.html')
 
 @app.route('/gitdeploy-hj83k5')
-def deploy(): subprocess.call(["sh ~/deploy.sh"], cwd='~/')
+def deploy(): subprocess.call(["sh /root/deploy.sh"], cwd='/root/')
 
 
 # Main
