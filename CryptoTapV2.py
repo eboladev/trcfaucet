@@ -1,5 +1,4 @@
 import datetime
-import subprocess
 from flask import Flask
 from flask import request
 from DripRequest import *
@@ -71,7 +70,8 @@ def add():
 			raise ValueError
 		print("Good drip request. Saving to database...")
 		data = Database(DATABASE_FILE, DATABASE_TABLE)
-		DripRequest(now, i.address, i.coupon, ip).save(data)
+		DripRequest(now, request.form['address'], request.form['coupon'],
+				    ip).save(data)
 		return redirect('/good')
 	except ValueError:
 		print("Bad drip request. Redirecting...")
@@ -97,9 +97,8 @@ def chat(): return render_template('chat.html')
 @app.route('/resources')
 def resources(): return render_template('resources.html')
 
-@app.route('/gitdeploy-hj83k5')
-def deploy(): subprocess.call(["sh /root/deploy.sh"], cwd='/root/')
-
+#@app.route('/gitdeploy-hj83k5')
+#def deploy(): subprocess.call(["sh /root/deploy.sh"], cwd='/root/')
 
 # Main
 if __name__ == '__main__':
