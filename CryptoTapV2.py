@@ -61,7 +61,7 @@ def send_coins():
 @app.route('/')
 def index(): return get_index()
 
-@app.route('/add', methods['POST'])
+@app.route('/add', methods=['POST'])
 def add(): 
 	ip = str(request.remote_addr)
 	now = str(datetime.datetime.now())
