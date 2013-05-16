@@ -1,8 +1,9 @@
 apt-get update
 apt-get -y install build-essential libboost-all-dev libssl-dev libdb-dev libdb4.8++-dev libglib2.0-dev
 apt-get update
-apt-get -y install git apt-file python3 python-flask
+apt-get -y install git apt-file python3 python-flask screen
 apt-get update
+apt-file update
 
 git clone https://github.com/terracoin/terracoin.git
 cd ~/terracoin/src
@@ -16,6 +17,7 @@ echo "rpcpassword=CHANGETHIS" >> /root/.terracoin/terracoin.conf
 terracoind -daemon
 terracoind getinfo
 terracoind getbalance
+terracoind getnewaddress
 sleep 5
 
 cd ~/
