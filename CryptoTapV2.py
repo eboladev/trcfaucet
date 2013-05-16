@@ -60,7 +60,7 @@ def send_coins():
 	"""Sends queued coins."""
 	data = Database(DATABASE_FILE, DATABASE_TABLE)
 	for i in data.get_unsent():
-		DripRequest(i[1], i[3], i[4], i[2], i[0]).send(DEFAULT_SEND_VAL, data)
+		DripRequest(i[3], i[4], i[2], i[0]).send(DEFAULT_SEND_VAL, data)
 	return "Sent!"
 
 # Routes

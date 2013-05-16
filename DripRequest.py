@@ -153,7 +153,6 @@ class DripRequest:
 	Stores a users terracoin send request. 
 
 	Data Members:
-	date    -- The timestamp of when the request was created.
 	address -- Terracoin address to send the transaction to.
 	coupon  -- Special code that allows users to get additional coins.
 	ip      -- The IP address that the request was made from.
@@ -188,8 +187,8 @@ class DripRequest:
 			raise LookupError
 
 	def get_balance(self):
-		"Retrieves the current balance. "
-		return commands.getstatusoutput('{0} getbalance')[1]
+		"Retrieves the current balance."
+		return int(commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))[1])
 
 	def send(self, amount, data):
 		"""
@@ -203,16 +202,21 @@ class DripRequest:
 		amount *= lookup_coupon(self.coupon)
 		 # hardcoded limit at 0.1 TRC in case the coupon system breaks
 		if amount > 0.1: amount = 0.1
-		command = '{0} sendtoaddress {1} {2}'
-		command = command.format(COIN_CLIENT, self.address, str(amount))
-		trans_id = commands.getstatusoutput(command)[1]
 		
-		# Send Payment
-		data.update_drip(self.drip_id, trans_id)
+		if (get_balance() - amount) > 0.001:
+			# Construct Command
+			command = '{0} sendtoaddress {1} {2}'
+			command = command.format(COIN_CLIENT, self.address, str(amount))
+			trans_id = commands.getstatusoutput(command)[1]
+		 
+			# Send Payment
+			data.update_drip(self.drip_id, trans_id)
 
-		# Console Message
-		con_message = "Sent {0} {1} to {2}. Traction ID: {3}"
-		return con_message.format(str(amount), COIN_NAME, self.address, trans_id)
+			# Console Message
+			con_message = "Sent {0} {1} to {2}. Traction ID: {3}"
+			return con_message.format(str(amount), COIN_NAME, self.address, trans_id)
+		else:
+			print("Insufficient Funds!")
 
 
 # Unit Tests
