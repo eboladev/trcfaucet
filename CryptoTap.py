@@ -63,7 +63,9 @@ class index:
 
 class good:
 	"""Displays success page."""
-	def GET(self): return get_index("good")
+	def GET(self):
+		#send_coins()
+		return get_index("good")
 
 class bad:
 	"""Displays error page."""
