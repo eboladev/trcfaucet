@@ -95,7 +95,7 @@ class Database:
 
 	def get_unsent(self, limit = 10):
 		text = "SELECT * FROM {0} WHERE trans_id = '{1}' LIMIT {2}"
-		return self.query(text.format(self.sql_table, "UNSENT"))
+		return self.query(text.format(self.sql_table, "UNSENT", limit))
 
 
 class DripValidate:

@@ -32,6 +32,7 @@ def get_html(save_time, ip, trans_id):
 
 	if trans_id == "UNSENT":
 		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
+		html = html.format(save_time, obfuscated_ip)
 	else:
 		short_trans_id = trans_id[:37] + "..."
 		trans_id_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
