@@ -10,13 +10,14 @@ from flask import render_template
 
 app = Flask(__name__)
 
-# TODO:
-# Be more careful about input
-# Improve Captcha Security with Sha Hashing
+# Problems:
+# Handle Input Better
+# Improve Captcha Security with SHA Hashing
 # Improve IP Address Obfuscation
-# Don't Make a Transaction If Balance is Low
+
+# Features:
+# Autodeploy Using Github Hooks
 # Revamp Coupon System
-# Autodeploy using github hooks
 
 # Globals
 DATABASE_FILE = 'trc.db'
@@ -42,19 +43,21 @@ def get_html(save_time, ip, trans_id):
 		short_trans_id = trans_id[:37] + "..."
 		trans_id_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
 		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
-		html = html.format(diff_time, obfuscated_ip, trans_id, short_trans_id)
+		html = html.format(diff_time, obfuscated_ip, trans_id_url, short_trans_id)
 	
 	return html
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
+	data = Database(DATABASE_FILE, DATABASE_TABLE)
 	captcha = (randrange(1, 15), randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
-	recent_drips = Database(DATABASE_FILE, DATABASE_TABLE).get_recent()
+	recent_drips = data.get_recent()
 	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
 	recent = ''.join(map(str, recent_drips_html))
+	stats = 3060 + data.get_count()[0][0]
 	return render_template('index.html', recent=recent, form_submit=form_submit_status,
-						   captcha=captcha, captcha_awns=captcha_awns)
+						   captcha=captcha, captcha_awns=captcha_awns, stats=stats)
 
 def send_coins():
 	"""Sends queued coins."""
