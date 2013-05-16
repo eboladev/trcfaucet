@@ -18,13 +18,32 @@ urls = (
 	'/resources', 'resources'
 )
 
+def sub_cypher(num, offset):
+	"""Number substitution offset cypher. Don't use offset values 0-9."""
+	return [(abs(int(x) - offset)%10) for x in num if x.isdigit()]
+
+def get_html(self, save_time, ip, trans_id):
+	"""Transform database output into a table."""
+	obfuscated_ip = ''.join(map(str, self.sub_cypher(list(ip), 655)))
+
+	if trans_id == "UNSENT":
+		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
+	else:
+		short_trans_id = trans_id[:40]
+		trans_id_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
+		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
+		html = html.format(save_time, obfuscated_ip, trans_id, short_trans_id)
+	
+	return html
+
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
 	render = web.template.frender('index.html')
 	captcha = (random.randrange(1, 15), random.randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database(DATABASE_FILE, DATABASE_TABLE).get_recent()
-	return render(recent_drips, form_submit_status, captcha, captcha_awns)
+	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips True]
+	return render(recent_drips_html, form_submit_status, captcha, captcha_awns)
 
 def send_coins():
 	"""Sends queued coins."""

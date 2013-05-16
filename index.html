@@ -131,22 +131,7 @@ $def with (recent, form_submit, captcha, captcha_awns)
 						</thead>
 						<tbody>
 							$for i in recent:
-								<tr>
-									<td>
-										$i[1]
-									</td>
-									<td>
-										$i[2]
-									</td>
-									<td>
-										$if i[5] == "UNSENT":
-											Processing...
-										$else:
-											<a href="http://cryptocoinexplorer.com:3750/tx/$i[5]">
-											$i[5][:40]...
-											</a>
-									</td>
-								</tr>
+								$i
 						</tbody>
 					</table>
 				</div>

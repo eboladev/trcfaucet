@@ -81,11 +81,6 @@ class Database:
 		text = "UPDATE {0} SET trans_id = '{1}' WHERE id = '{2}'"
 		self.command(text.format(self.sql_table, trans_id, drip_id))
 
-	def get_html(self, save_time, ip, trans_id):
-		html = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>"
-		obfuscated_ip = ''.join(map(str, self.sub_cypher(list(ip), 655)))
-		return html.format(save_time, obfuscated_ip, trans_id)
-
 	def insert(self, crdate, ip, address, coupon, trans_id):
 		text = "INSERT INTO {0} (id, crdate, ip, address, coupon, trans_id)"
 		text = text.format(self.sql_table)
@@ -100,11 +95,7 @@ class Database:
 	def get_unsent(self, limit = 10):
 		text = "SELECT * FROM {0} WHERE trans_id = '{1}' LIMIT {2}"
 		return self.query(text.format(self.sql_table, "UNSENT"))
-
-	# Security
-	def sub_cypher(num, offset):
-		"""Number substitution offset cypher. Don't use offset values 0-9."""
-		return [(abs(int(x) - offset)%10) for x in num if x.isdigit()]
+		
 
 class DripValidate:
 	def __init__(self):
