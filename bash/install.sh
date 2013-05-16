@@ -14,11 +14,11 @@ mkdir /root/.terracoin/
 echo "rpcuser=CHANGETHIS" >> /root/.terracoin/terracoin.conf
 echo "rpcpassword=CHANGETHIS" >> /root/.terracoin/terracoin.conf
 
+sleep 5
 terracoind -daemon
 terracoind getinfo
 terracoind getbalance
 terracoind getnewaddress
-sleep 5
 
 cd ~/
 git clone https://github.com/super3/CryptoTap.git
