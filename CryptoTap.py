@@ -1,114 +1,110 @@
-import web
-import random
 import datetime
+from flask import Flask
+from flask import request
 from DripRequest import *
+from flask import redirect
+from random import randrange
+from datetime import datetime
+from datetime import timedelta
+from flask import render_template
 
+app = Flask(__name__)
+
+# TODO:
+# Be more careful about input
+# Improve Captcha Security with Sha Hashing
+# Improve IP Address Obfuscation
+# Don't Make a Transaction If Balance is Low
+# Revamp Coupon System
+# Autodeploy using github hooks
+
+# Globals
 DATABASE_FILE = 'trc.db'
 DATABASE_TABLE = 'drip_request'
 DEFAULT_SEND_VAL = 0.0001
 
-urls = (
-	'/', 'index',
-	'/add', 'add',
-	'/good', 'good',
-	'/bad', 'bad',
-	'/duplicate', 'duplicate',
-	'/send', 'send',
-	'/chat', 'chat',
-	'/resources', 'resources'
-)
-
+# Helper Functions
 def sub_cypher(num, offset):
 	"""Number substitution offset cypher. Don't use offset values 0-9."""
+	# Implement Better Cypher: rotate((ip % sum1bits(ip) ), sum0bits(ip))
 	return [(abs(int(x) - offset)%10) if x.isdigit() else '.' for x in num]
 
 def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
+	diff_time = datetime.now() - datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
+	diff_time = divmod(diff_time.seconds, 60)
+	diff_time = "{0} mins, {1} secs ago".format(diff_time[0], diff_time[1])
 	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 655)))
-
 	if trans_id == "UNSENT":
 		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
+		html = html.format(diff_time, obfuscated_ip)
 	else:
-		short_trans_id = trans_id[:40]
+		short_trans_id = trans_id[:37] + "..."
 		trans_id_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
 		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
-		html = html.format(save_time, obfuscated_ip, trans_id, short_trans_id)
+		html = html.format(diff_time, obfuscated_ip, trans_id, short_trans_id)
 	
 	return html
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
-	render = web.template.frender('index.html')
-	captcha = (random.randrange(1, 15), random.randrange(1, 15))
+	captcha = (randrange(1, 15), randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database(DATABASE_FILE, DATABASE_TABLE).get_recent()
 	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
-	recent_drips_html = ''.join(map(str, recent_drips_html))
-	return render(recent_drips_html, form_submit_status, captcha, captcha_awns)
+	recent = ''.join(map(str, recent_drips_html))
+	return render_template('index.html', recent=recent, form_submit=form_submit_status,
+						   captcha=captcha, captcha_awns=captcha_awns)
 
 def send_coins():
 	"""Sends queued coins."""
 	data = Database(DATABASE_FILE, DATABASE_TABLE)
 	for i in data.get_unsent():
-		DripRequest(i[1], i[3], i[4], i[2], i[0]).send(DEFAULT_SEND_VAL, data)
+		DripRequest(i[3], i[4], i[2], i[0]).send(DEFAULT_SEND_VAL, data)
 	return "Sent!"
 
-class add:
-	"""Takes add POST request, and redirects to relevant page"""
-	def POST(self):
-		i = web.input()
-		ip = str(web.ctx.get('ip'))
-		now = str(datetime.datetime.now())
-		try:
-			if i.captcha != i.captcha_awns: raise ValueError
-			print("Good drip request. Saving to database...")
-			data = Database(DATABASE_FILE, DATABASE_TABLE)
-			DripRequest(now, i.address, i.coupon, ip).save(data)
-			raise web.seeother('/good')
-		except ValueError:
-			print("Bad drip request. Redirecting...")
-			raise web.seeother('/bad')
-		except LookupError:
-			print("Duplicate IP or Address. Redirecting...")
-			raise web.seeother('/duplicate')
-		else:
-			print("Unexplained failure.")
-			raise web.seeother('/bad')
+# Routes
+@app.route('/')
+def index(): return get_index()
 
-# Unfortunately, web.py does not allow me to route to functions, so
-# this will always look a bit messy in my opinion. 
+@app.route('/add', methods=['POST'])
+def add(): 
+	ip = str(request.remote_addr)
+	try:
+		if request.form['captcha'] != request.form['captcha_awns']: 
+			raise ValueError
+		print("Good drip request. Saving to database...")
+		data = Database(DATABASE_FILE, DATABASE_TABLE)
+		DripRequest(request.form['address'], request.form['coupon'],
+				    ip).save(data)
+		return redirect('/good')
+	except ValueError:
+		print("Bad drip request. Redirecting...")
+		return redirect('/bad')
+	except LookupError:
+		print("Duplicate IP or Address. Redirecting...")
+		return redirect('/duplicate')
+	else:
+		print("Unexplained failure.")
+		return redirect('/bad')
 
-class index:
-	"""Displays index page."""
-	def GET(self): return get_index()
+@app.route('/send')
+def send(): return send_coins()
+@app.route('/good')
+def good(): return get_index("good")
+@app.route('/bad')
+def bad(): return get_index("bad")
+@app.route('/duplicate')
+def duplicate(): return get_index("duplicate")
 
-class good:
-	"""Displays success page."""
-	def GET(self):
-		#send_coins()
-		return get_index("good")
+@app.route('/chat')
+def chat(): return render_template('chat.html')
+@app.route('/resources')
+def resources(): return render_template('resources.html')
 
-class bad:
-	"""Displays error page."""
-	def GET(self): return get_index("bad")
+#@app.route('/gitdeploy-hj83k5')
+#def deploy(): subprocess.call(["sh /root/deploy.sh"], cwd='/root/')
 
-class duplicate:
-	"""Displays duplicate page."""
-	def GET(self): return get_index("duplicate")
-
-class send:
-	"""Sends unprocessed drips."""
-	def GET(self): return send_coins()
-
-# Other pages.
-
-class chat:
-	def GET(self): return web.template.frender('chat.html')()
-
-class resources:
-	def GET(self): return web.template.frender('resources.html')()
-
-
-if __name__ == "__main__":
-	app = web.application(urls, globals())
-	app.run()
+# Main
+if __name__ == '__main__':
+	app.run(host='0.0.0.0', port=80, debug=True)

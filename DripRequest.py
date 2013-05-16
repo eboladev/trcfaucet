@@ -97,6 +97,9 @@ class Database:
 		text = "SELECT * FROM {0} WHERE trans_id = '{1}' LIMIT {2}"
 		return self.query(text.format(self.sql_table, "UNSENT", limit))
 
+	def get_count(self):
+		text = "SELECT Count(*) FROM {0}"
+		return self.query(text.format(self.sql_table))
 
 class DripValidate:
 	def __init__(self):
@@ -188,7 +191,7 @@ class DripRequest:
 
 	def get_balance(self):
 		"Retrieves the current balance."
-		return int(commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))[1])
+		return float(commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))[1])
 
 	def send(self, amount, data):
 		"""
@@ -203,7 +206,7 @@ class DripRequest:
 		 # hardcoded limit at 0.1 TRC in case the coupon system breaks
 		if amount > 0.1: amount = 0.1
 		
-		if (get_balance() - amount) > 0.001:
+		if (self.get_balance() - amount) > 0.001:
 			# Construct Command
 			command = '{0} sendtoaddress {1} {2}'
 			command = command.format(COIN_CLIENT, self.address, str(amount))
