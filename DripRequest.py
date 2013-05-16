@@ -85,7 +85,7 @@ class Database:
 	def insert(self, crdate, ip, address, coupon, trans_id):
 		text = "INSERT INTO {0} (id, crdate, ip, address, coupon, trans_id)"
 		text = text.format(self.sql_table)
-		text += "VALUES (NULL, date('now'),'{1}','{2}','{3}','{4}')"
+		text += "VALUES (NULL, datetime('now'),'{1}','{2}','{3}','{4}')"
 		self.command(text.format(crdate, ip, address, coupon, trans_id))
 
 	# Get Methods

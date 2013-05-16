@@ -3,7 +3,9 @@ from flask import request
 from DripRequest import *
 from flask import redirect
 from random import randrange
+from daaetime import datetime
 from flask import render_template
+
 app = Flask(__name__)
 
 # TODO:
@@ -27,8 +29,9 @@ def sub_cypher(num, offset):
 
 def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
+	diff_time = datetime.datetime.now() - datetime.strptime(save_time, "%Y-%m-%d")
+	print(diff_time)
 	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 655)))
-
 	if trans_id == "UNSENT":
 		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
 		html = html.format(save_time, obfuscated_ip)
