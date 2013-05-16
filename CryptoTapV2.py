@@ -5,6 +5,7 @@ from flask import render_template
 app = Flask(__name__)
 
 # TODO:
+# Be more careful about input
 # Improve Captcha Security with Sha Hashing
 # Improve IP Address Obfuscation
 # Don't Make a Transaction If Balance is Low
@@ -28,7 +29,7 @@ def get_html(save_time, ip, trans_id):
 	if trans_id == "UNSENT":
 		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
 	else:
-		short_trans_id = trans_id[:40]
+		short_trans_id = trans_id[:37] + "..."
 		trans_id_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
 		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
 		html = html.format(save_time, obfuscated_ip, trans_id, short_trans_id)
@@ -54,8 +55,25 @@ def send_coins():
 
 # Routes
 @app.route('/')
-def index():
-	return get_index()
+def index(): return get_index()
 
+@app.route('/add')
+def add(): return "Waiting..."
+
+@app.route('/send')
+def send(): return send_coins()
+@app.route('/good')
+def good(): return get_index("good")
+@app.route('/bad')
+def bad(): return get_index("bad")
+@app.route('/duplicate')
+def duplicate(): return get_index("duplicate")
+
+@app.route('/chat')
+def index(): return render_template('chat.html')
+@app.route('/resources')
+def index(): return render_template('resources.html')
+
+# Main
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=80, debug=True)
