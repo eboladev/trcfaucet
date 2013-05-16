@@ -1,7 +1,7 @@
 from flask import Flask
 from DripRequest import *
 from random import randrange
-from flash import render_template
+from flask import render_template
 app = Flask(__name__)
 
 # Globals
@@ -14,6 +14,20 @@ def sub_cypher(num, offset):
 	"""Number substitution offset cypher. Don't use offset values 0-9."""
 	# Implement Better Cypher: rotate((ip % sum1bits(ip) ), sum0bits(ip))
 	return [(abs(int(x) - offset)%10) if x.isdigit() else '.' for x in num]
+
+def get_html(save_time, ip, trans_id):
+	"""Transform database output into a table."""
+	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 655)))
+
+	if trans_id == "UNSENT":
+		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
+	else:
+		short_trans_id = trans_id[:40]
+		trans_id_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
+		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
+		html = html.format(save_time, obfuscated_ip, trans_id, short_trans_id)
+	
+	return html
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
