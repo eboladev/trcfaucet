@@ -43,27 +43,30 @@
 	<div class="row">
 		<div class="large-8 columns">
 
-			{% if form_submit == "good": %}
+			{% if form_submit == "good" %}
 				<div data-alert class="alert-box">
 					You have been added! Our server will send your Terracoin in the next 5 minutes.
 					<a href="#" class="close">&times;</a>
 				</div>
-			{% elif form_submit == "bad": %}
+			)
+			{% elif form_submit == "bad" %}
 				<div data-alert class="alert-box alert">
 					Invalid Terracoin Address or Captcha! Please try again.
 					<a href="#" class="close">&times;</a>
 				</div>
-			{% elif form_submit == "duplicate": %}
+			{% elif form_submit == "duplicate" %}
 				<div data-alert class="alert-box alert">
 					Too many coins have been sent using this IP or Terracoin address.
 					<a href="#" class="close">&times;</a>
 				</div>
+			{% endif %}
 
 			<h3>What is Terracoin?</h3>
 			<p>
-				<a href="http://terracoin.com">Terracoin</a> (TRC) is a digital currency, based on <a href="http://bitcoin.org">Bitcoin</a>. It operates on a peer to peer
-				network, the same technology behind <a href="http://www.skype.com/">Skype</a> and <a href="http://www.bittorrent.com/">BitTorrent</a>.
-				Futhermore, Terracoin is completely decentralized, meaning it is not controlled by any government or central bank.
+				<a href="http://terracoin.com">Terracoin</a> (TRC) is a digital currency, based on 
+				<a href="http://bitcoin.org">Bitcoin</a>. It operates on a peer to peer	network, the same
+				technology behind <a href="http://www.skype.com/">Skype</a> and <a href="http://www.bittorrent.com/">BitTorrent</a>. Futhermore, Terracoin is completely decentralized, meaning it is not controlled by 
+				any government or central bank.
 			 </p>
 
 			<h3>Get Free Terracoins</h3>
