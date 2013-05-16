@@ -183,7 +183,7 @@ class DripRequest:
 		num_ip = data.count_ip(self.ip)
 		num_address = data.count_address(self.address)
 		request_str = "IP: {0}/{1} and Address: {2}/{3}"
-		print(request_limit.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
+		print(request_str.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
 		if num_ip <= REQUEST_LIMIT and num_address <= REQUEST_LIMIT:
 			data.insert(self.date, self.ip, self.address, self.coupon, "UNSENT")
 		else:
