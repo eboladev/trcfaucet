@@ -13,6 +13,7 @@ import commands
 
 COIN_NAME = "TRC"
 COIN_CLIENT = "terracoind"
+REQUEST_LIMIT = 3
 
 # Hard Coded Coupons
 def lookup_coupon(coupon):
@@ -95,7 +96,7 @@ class Database:
 	def get_unsent(self, limit = 10):
 		text = "SELECT * FROM {0} WHERE trans_id = '{1}' LIMIT {2}"
 		return self.query(text.format(self.sql_table, "UNSENT"))
-		
+
 
 class DripValidate:
 	def __init__(self):
@@ -177,15 +178,14 @@ class DripRequest:
 		return text.format(self.date, self.address, self.coupon, self.ip,
 						   self.drip_id)
 
-	def save(self):
+	def save(self, data):
 		"""Insert drip request into databse."""
-		data = Database('test.db', 'drip_request')
 		num_ip = data.count_ip(self.ip)
 		num_address = data.count_address(self.address)
-		print("IP: {0} and Address: {1}".format(str(num_ip), str(num_address)))
-		if num_ip <= 3 and num_address <= 3:
-			data.insert(self.date, self.ip, self.address, self.coupon,
-					    "UNSENT")
+		request_str = "IP: {0}/{1} and Address: {2}/{3}"
+		print(request_limit.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
+		if num_ip <= REQUEST_LIMIT and num_address <= REQUEST_LIMIT:
+			data.insert(self.date, self.ip, self.address, self.coupon, "UNSENT")
 		else:
 			raise LookupError
 

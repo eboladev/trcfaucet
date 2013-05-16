@@ -22,7 +22,7 @@ def sub_cypher(num, offset):
 	"""Number substitution offset cypher. Don't use offset values 0-9."""
 	return [(abs(int(x) - offset)%10) for x in num if x.isdigit()]
 
-def get_html(self, save_time, ip, trans_id):
+def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
 	obfuscated_ip = ''.join(map(str, self.sub_cypher(list(ip), 655)))
 
@@ -42,7 +42,7 @@ def get_index(form_submit_status = None):
 	captcha = (random.randrange(1, 15), random.randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database(DATABASE_FILE, DATABASE_TABLE).get_recent()
-	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips True]
+	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
 	return render(recent_drips_html, form_submit_status, captcha, captcha_awns)
 
 def send_coins():
@@ -61,7 +61,8 @@ class add:
 		try:
 			if i.captcha != i.captcha_awns: raise ValueError
 			print("Good drip request. Saving to database...")
-			DripRequest(now, i.address, i.coupon, ip).save()
+			data = Database(DATABASE_FILE, DATABASE_TABLE)
+			DripRequest(now, i.address, i.coupon, ip).save(data)
 			raise web.seeother('/good')
 		except ValueError:
 			print("Bad drip request. Redirecting...")
