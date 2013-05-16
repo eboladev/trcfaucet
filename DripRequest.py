@@ -82,11 +82,11 @@ class Database:
 		text = "UPDATE {0} SET trans_id = '{1}' WHERE id = '{2}'"
 		self.command(text.format(self.sql_table, trans_id, drip_id))
 
-	def insert(self, crdate, ip, address, coupon, trans_id):
+	def insert(self, ip, address, coupon, trans_id):
 		text = "INSERT INTO {0} (id, crdate, ip, address, coupon, trans_id)"
 		text = text.format(self.sql_table)
-		text += "VALUES (NULL, datetime('now'),'{1}','{2}','{3}','{4}')"
-		self.command(text.format(crdate, ip, address, coupon, trans_id))
+		text += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
+		self.command(text.format(ip, address, coupon, trans_id))
 
 	# Get Methods
 	def get_recent(self, limit = 10):
@@ -183,7 +183,7 @@ class DripRequest:
 		request_str = "IP: {0}/{1} and Address: {2}/{3}"
 		print(request_str.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
 		if num_ip <= REQUEST_LIMIT and num_address <= REQUEST_LIMIT:
-			data.insert(self.date, self.ip, self.address, self.coupon, "UNSENT")
+			data.insert(self.ip, self.address, self.coupon, "UNSENT")
 		else:
 			raise LookupError
 
