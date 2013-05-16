@@ -4,6 +4,12 @@ from random import randrange
 from flask import render_template
 app = Flask(__name__)
 
+# TODO:
+# Improve Captcha Security with Sha Hashing
+# Improve IP Address Obfuscation
+# Don't Make a Transaction If Balance is Low
+# Revamp Coupon System
+
 # Globals
 DATABASE_FILE = 'trc.db'
 DATABASE_TABLE = 'drip_request'
@@ -31,12 +37,11 @@ def get_html(save_time, ip, trans_id):
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
-	captcha = (randrange(1, 15), randrange(1, 15))
+	captcha = (randrange(1, 15), randrange(1, 15))no
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database(DATABASE_FILE, DATABASE_TABLE).get_recent()
 	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
 	recent = ''.join(map(str, recent_drips_html))
-	# $def with (recent, form_submit, captcha, captcha_awns)
 	return render_template('index.html', recent=recent, form_submit=form_submit_status,
 						   captcha=captcha, captcha_awns=captcha_awns)
 

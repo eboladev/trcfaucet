@@ -71,8 +71,9 @@
 
 			<h3>Get Free Terracoins</h3>
 			<p>
-				No gimmicks or tricks. We want you to try Terracoin out, so just put in a Terracoin address, and we will send you some! 
-				Currently, this faucet pays out <b>every 5 minutes</b>. You may submit up to 3 times, and use coupons to get higher payouts. 
+				No gimmicks or tricks. We want you to try Terracoin out, so just put in a Terracoin address, and we will
+				send you some! Currently, this faucet pays out <b>every 5 minutes</b>. You may submit up to 3 times, and
+				use coupons to get higher payouts. 
 			</p>
 	
 			<form method="post" action="add">
@@ -131,7 +132,9 @@
 							</tr>
 						</thead>
 						<tbody>
+						{% raw %}
 							{{recent}}
+						{% endraw %}
 						</tbody>
 					</table>
 				</div>
@@ -165,11 +168,11 @@
 		</div>
 	</div>
 
-	<script>
+	<!--<script>
 		document.write('<script src=' +
 		('__proto__' in {} ? 'static/js/vendor/zepto' : 'static/js/vendor/jquery') +
 		'.js><\/script>')
-	</script>
+	</script>-->
 
 	<script>
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -181,8 +184,8 @@
 		ga('send', 'pageview');
 	</script>
 
-	<script src="static/js/foundation.min.js"></script>
 	<!--
+	<script src="static/js/foundation.min.js"></script>
 	<script src="static/js/foundation/foundation.js"></script>
 	<script src="static/js/foundation/foundation.alerts.js"></script>
 	<script src="static/js/foundation/foundation.clearing.js"></script>
