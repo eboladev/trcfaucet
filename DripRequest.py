@@ -167,7 +167,6 @@ class DripRequest:
 		elif not vall.validate_coupon(str(coupon)): coupon = "INVALID"
 		elif not vall.validate_ip(str(ip)): raise ValueError("Invalid IP.")
 
-		self.date = date
 		self.address = str(address)
 		self.coupon = str(coupon).upper()
 		self.ip = str(ip)
@@ -175,8 +174,7 @@ class DripRequest:
 
 	def __str__(self):
 		text = '{0} {1} {2} {3} {4}'
-		return text.format(self.date, self.address, self.coupon, self.ip,
-						   self.drip_id)
+		return text.format(self.address, self.coupon, self.ip, self.drip_id)
 
 	def save(self, data):
 		"""Insert drip request into databse."""
