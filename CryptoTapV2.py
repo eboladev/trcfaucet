@@ -1,5 +1,8 @@
+import subprocess
 from flask import Flask
+from flask import request
 from DripRequest import *
+from flask import redirect
 from random import randrange
 from flask import render_template
 app = Flask(__name__)
@@ -10,6 +13,7 @@ app = Flask(__name__)
 # Improve IP Address Obfuscation
 # Don't Make a Transaction If Balance is Low
 # Revamp Coupon System
+# Autodeploy using github hooks
 
 # Globals
 DATABASE_FILE = 'trc.db'
@@ -57,8 +61,26 @@ def send_coins():
 @app.route('/')
 def index(): return get_index()
 
-@app.route('/add')
-def add(): return "Waiting..."
+@app.route('/add', methods['POST'])
+def add(): 
+	ip = str(request.remote_addr)
+	now = str(datetime.datetime.now())
+	try:
+		if request.form['captcha'] != request.form['captcha_awns']: 
+			raise ValueError
+		print("Good drip request. Saving to database...")
+		data = Database(DATABASE_FILE, DATABASE_TABLE)
+		DripRequest(now, i.address, i.coupon, ip).save(data)
+		return redirect('/good')
+	except ValueError:
+		print("Bad drip request. Redirecting...")
+		return redirect('/bad')
+	except LookupError:
+		print("Duplicate IP or Address. Redirecting...")
+		return redirect('/duplicate')
+	else:
+		print("Unexplained failure.")
+		return redirect('/bad')
 
 @app.route('/send')
 def send(): return send_coins()
@@ -73,6 +95,10 @@ def duplicate(): return get_index("duplicate")
 def chat(): return render_template('chat.html')
 @app.route('/resources')
 def resources(): return render_template('resources.html')
+
+@app.route('/gitdeploy-hj83k5')
+def deploy(): subprocess.call(["sh ~/deploy.sh"], cwd='~/')
+
 
 # Main
 if __name__ == '__main__':
