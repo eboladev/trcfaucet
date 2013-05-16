@@ -37,7 +37,7 @@ def get_html(save_time, ip, trans_id):
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
-	captcha = (randrange(1, 15), randrange(1, 15))no
+	captcha = (randrange(1, 15), randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database(DATABASE_FILE, DATABASE_TABLE).get_recent()
 	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
