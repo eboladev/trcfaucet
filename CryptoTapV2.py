@@ -70,9 +70,9 @@ def bad(): return get_index("bad")
 def duplicate(): return get_index("duplicate")
 
 @app.route('/chat')
-def index(): return render_template('chat.html')
+def chat(): return render_template('chat.html')
 @app.route('/resources')
-def index(): return render_template('resources.html')
+def resources(): return render_template('resources.html')
 
 # Main
 if __name__ == '__main__':
