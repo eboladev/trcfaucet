@@ -20,7 +20,7 @@ urls = (
 
 def sub_cypher(num, offset):
 	"""Number substitution offset cypher. Don't use offset values 0-9."""
-	return [(abs(int(x) - offset)%10) for x in num if x.isdigit()]
+	return [(abs(int(x) - offset)%10) if x.isdigit() else '.' for x in num]
 
 def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
@@ -43,7 +43,7 @@ def get_index(form_submit_status = None):
 	captcha_awns = captcha[0] + captcha[1]
 	recent_drips = Database(DATABASE_FILE, DATABASE_TABLE).get_recent()
 	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
-	recent_drips_html = '.'join(map(str, recent_drips_html)
+	recent_drips_html = ''.join(map(str, recent_drips_html))
 	return render(recent_drips_html, form_submit_status, captcha, captcha_awns)
 
 def send_coins():
