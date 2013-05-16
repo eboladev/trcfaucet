@@ -1,7 +1,7 @@
 apt-get update
 apt-get -y install build-essential libboost-all-dev libssl-dev libdb-dev libdb4.8++-dev libglib2.0-dev
 apt-get update
-apt-get -y install git apt-file python3 python-webpy 
+apt-get -y install git apt-file python3 python-flask
 apt-get update
 
 git clone https://github.com/terracoin/terracoin.git
