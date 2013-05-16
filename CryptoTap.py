@@ -97,7 +97,9 @@ def add():
 @app.route('/send')
 def send(): return send_coins()
 @app.route('/good')
-def good(): return get_index("good")
+def good(): 
+	send_coins()
+	return get_index("good")
 @app.route('/bad')
 def bad(): return get_index("bad")
 @app.route('/duplicate')
@@ -113,4 +115,4 @@ def resources(): return render_template('resources.html')
 
 # Main
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=80)
