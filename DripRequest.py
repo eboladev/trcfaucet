@@ -53,8 +53,8 @@ class Database:
 		self.command(text)
 		# Insert First Row
 		ti = "bf9433692129d60f10f47d391c5b8435fc3852d0cd7c1f19db62403c5df89b3f"
-		self.insert("Faucet Start", "69.87.160.3",
-				    "1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa", "DOUBLEMONEY", ti)
+		self.insert("69.87.160.3","1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa",
+				    "DOUBLEMONEY", ti)
 
 	def command(self, text):
 		"""Executes a single SQL command."""
