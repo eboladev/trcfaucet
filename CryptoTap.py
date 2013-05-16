@@ -23,7 +23,7 @@ app = Flask(__name__)
 # More Earning Methods
 
 # Globals
-DATABASE_FILE = 'trc.db'
+DATABASE_FILE = '/root/trc.db'
 DATABASE_TABLE = 'drip_request'
 DEFAULT_SEND_VAL = 0.0001
 
