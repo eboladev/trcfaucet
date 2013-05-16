@@ -21,6 +21,26 @@ def lookup_coupon(coupon):
 	elif coupon == "DOUBLEMONEY": return 2
 	return 1 
 
+# class Coupons:
+# 	def __init__(self, datebase_path, database_table):
+# 		self.sql_database = datebase_path
+# 		self.sql_table = database_table
+# 		if not os.path.exists(datebase_path):
+# 			self.install()
+# 	def install(self):
+# 		"""Installs the database, and inserts the first item."""
+# 		text = "CREATE TABLE {0}(id INTEGER NOT NULL,code TEXT(25),"
+# 		text = text.format(self.sql_table)
+# 		text += ""
+# 	def insert(self, code, rate, uses):
+# 		text = "INSERT INTO {0} (id, crdate, ip, address, coupon, trans_id)"
+# 		text = text.format(self.sql_table)
+# 		text += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
+# 		self.command(text.format(ip, address, coupon, trans_id))
+# 	def cleandb(self):
+# 		pass
+# 	def query(self):
+# 		pass
 
 class Database:
 	def __init__(self, datebase_path, database_table):
@@ -184,7 +204,7 @@ class DripRequest:
 		num_address = data.count_address(self.address)
 		request_str = "IP: {0}/{1} and Address: {2}/{3}"
 		print(request_str.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
-		if num_ip <= REQUEST_LIMIT and num_address <= REQUEST_LIMIT:
+		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
 			data.insert(self.ip, self.address, self.coupon, "UNSENT")
 		else:
 			raise LookupError

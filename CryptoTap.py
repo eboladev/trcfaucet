@@ -13,11 +13,14 @@ app = Flask(__name__)
 # Problems:
 # Handle Input Better
 # Improve Captcha Security with SHA Hashing
-# Improve IP Address Obfuscation
 
 # Features:
 # Autodeploy Using Github Hooks
 # Revamp Coupon System
+
+# Version:
+# Clean Code and Document
+# More Earning Methods
 
 # Globals
 DATABASE_FILE = 'trc.db'
