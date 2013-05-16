@@ -52,7 +52,7 @@ class Database:
 		text += "coupon TEXT(25),trans_id TEXT(25),PRIMARY KEY (id))"
 		self.command(text)
 		# Insert First Row
-		ti = 
+		ti = "bf9433692129d60f10f47d391c5b8435fc3852d0cd7c1f19db62403c5df89b3f"
 		self.insert("Faucet Start", "69.87.160.3",
 				    "1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa", "DOUBLEMONEY", ti)
 
