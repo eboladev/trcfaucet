@@ -122,7 +122,7 @@ def get_index(form_submit_status = None):
 	recent = ''.join(map(str, recent_drips_html))
 	
 	cur = g.db.execute('SELECT Count(*) FROM drip_request')
-	stats = 3060 + int(cur.fetchone()[0])
+	stats = 3349 + int(cur.fetchone()[0])
 
 	return render_template('index.html', recent=recent, form_submit=form_submit_status,
 						   captcha=captcha, captcha_awns=captcha_awns, stats=stats)
