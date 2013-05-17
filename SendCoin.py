@@ -8,14 +8,14 @@ DEFAULT_SEND_VAL = 0.0001
 
 def send_coins():
 	"""Sends queued coins."""
-	data = Database(DATABASE_FILE, DATABASE_TABLE)
-	unsent = data.get_unsent(5)
+	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 5')
+	recent_drips = recent_drips.fetchall()
 
-	if len(unsent) >= 0: print("No Drips Found.")
+	if len(recent_drips) >= 0: print("No Drips Found.")
 	else: print("Found {0} Drips".format(len(unsent)))
 
-	for i in unsent:
-		drip = DripRequest(i[3], i[4], i[2], i[0])
+	for row in recent_drips:
+		drip = DripRequest(row[3], row[4], row[2], row[0])
 		print(drip.send(DEFAULT_SEND_VAL, data))
 
 # Infinite Loop...

@@ -106,26 +106,24 @@ def get_index(form_submit_status = None):
 @app.route('/')
 def index(): return get_index()
 
-# @app.route('/add', methods=['POST'])
-# def add(): 
-# 	ip = str(request.remote_addr)
-# 	try:
-# 		if request.form['captcha'] != request.form['captcha_awns']: 
-# 			raise ValueError
-# 		print("Good drip request. Saving to database...")
-# 		data = Database(DATABASE_FILE, DATABASE_TABLE)
-# 		DripRequest(request.form['address'], request.form['coupon'],
-# 				    ip).save(data)
-# 		return redirect('/good')
-# 	except ValueError:
-# 		print("Bad drip request. Redirecting...")
-# 		return redirect('/bad')
-# 	except LookupError:
-# 		print("Duplicate IP or Address. Redirecting...")
-# 		return redirect('/duplicate')
-# 	else:
-# 		print("Unexplained failure.")
-# 		return redirect('/bad')
+@app.route('/add', methods=['POST'])
+def add(): 
+	ip = str(request.remote_addr)
+	try:
+		if request.form['captcha'] != request.form['captcha_awns']: 
+			raise ValueError
+		print("Good drip request. Saving to database...")
+		# DripRequest(request.form['address'], request.form['coupon'], ip).save(data)
+		 return redirect(url_for('index'))
+	except ValueError:
+		print("Bad drip request. Redirecting...")
+		return redirect(url_for('bad'))
+	except LookupError:
+		print("Duplicate IP or Address. Redirecting...")
+		return redirect(url_for('duplicate'))
+	else:
+		print("Unexplained failure.")
+		return redirect(url_for('bad'))
 
 @app.route('/good')
 def good(): return get_index("good")
