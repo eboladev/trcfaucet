@@ -88,8 +88,7 @@ def get_html(save_time, ip, trans_id):
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
 	captcha = (randrange(1, 15), randrange(1, 15))
-	captcha_awns = hashlib.sha1().update(str(captcha[0] + captcha[1]))
-	captcha_awns = captcha_awns.hexdigest()
+	captcha_awns = hashlib.sha1(str(captcha[0] + captcha[1])).hexdigest()
 
 	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 10')
 	recent_drips_html = [get_html(row[1], row[2], row[5]) for row in recent_drips.fetchall()]
@@ -110,8 +109,8 @@ def index(): return get_index()
 def add(): 
 	ip = str(request.remote_addr)
 	try:
-		captcha = hashlib.sha1().update(request.form['captcha'])
-		if captcha.hexdigest() != request.form['captcha_awns']: 
+		captcha_try = hashlib.sha1(request.form['captcha']).hexdigest()
+		if captcha_try != request.form['captcha_awns']: 
 			raise ValueError
 		print("Good drip request. Saving to database...")
 		flash('You were logged out')
