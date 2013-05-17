@@ -93,7 +93,9 @@ def get_html(save_time, ip, trans_id):
 
 def send_coins():
 	"""Sends queued coins."""
-	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 5')
+	query = "SELECT * FROM drip_request WHERE trans_id = '{1}' LIMIT {2}"
+	query = query.format("UNSENT", 5)
+	recent_drips = g.db.execute(query)
 	recent_drips = recent_drips.fetchall()
 
 	if len(recent_drips) >= 0: print("No Drips Found.")
