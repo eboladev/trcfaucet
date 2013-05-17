@@ -50,6 +50,12 @@ def init_db():
 			db.cursor().executescript(f.read())
 		db.commit()
 
+def get_connection():
+    db = getattr(g, '_db', None)
+    if db is None:
+        db = g._db = connect_db()
+    return db
+
 def query_db(query, args=(), one=False):
 	cur = g.db.execute(query, args)
 	rv = [dict((cur.description[idx][0], value)
@@ -88,15 +94,17 @@ def get_index(form_submit_status = None):
 	# recent_drips = data.get_recent()
 	# recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
 	# recent = ''.join(map(str, recent_drips_html))
-	# stats = 3060 + data.get_count()[0][0]
+	
+	stats = 3060 + int(query_db('SELECT Count(*) FROM drip_request'))
+	print(stats)
 
 	return render_template('index.html', recent=None, form_submit=form_submit_status,
-						   captcha=captcha, captcha_awns=captcha_awns, stats=0)
+						   captcha=captcha, captcha_awns=captcha_awns, stats=stats)
 
 
 # Routes
 @app.route('/')
-def index(): return "test"
+def index(): get_index()
 
 # @app.route('/add', methods=['POST'])
 # def add(): 
