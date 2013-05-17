@@ -203,9 +203,9 @@ class DripRequest:
 		request_str = "IP: {0}/{1} and Address: {2}/{3}"
 		print(request_str.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
 		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
-			query = 'insert into drip_request (crdate, ip, address, coupon, trans_id) values ({0}, ?, ?, ?, ?)'
-			query = query.format("dateime('now')")
-			g.db.execute(query, [self.ip, self.address, self.coupon, "UNSENT"])
+			text = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
+			text += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
+			g.db.execute(query.format(ip, address, coupon, trans_id))
 			g.db.commit()
 
 		else:
