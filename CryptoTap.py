@@ -103,8 +103,10 @@ def send_coins():
 		for row in recent_drips:
 			drip = DripRequest(row[3], row[4], row[2], row[0])
 			print(drip.send(DEFAULT_SEND_VAL))
+	except ValueError:
+		print("Something Broke1...")
 	else:
-		print("Something Broke...")
+		print("Something Broke2...")
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
