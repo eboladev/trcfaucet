@@ -101,7 +101,7 @@ class DripRequest:
 		text = '{0} {1} {2} {3} {4}'
 		return text.format(self.address, self.coupon, self.ip, self.drip_id)
 
-	def count_unique(row, val):
+	def count_unique(self, row, val):
 		query = "SELECT Count(*) FROM drip_request WHERE {0} = '{1}'"
 		cur = g.db.execute(query.format(row, val))
 		return int(cur.fetchone()[0])
