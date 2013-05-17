@@ -13,6 +13,7 @@ from flask import request
 from flask import session
 from flask import redirect
 from flask import render_template
+from contextlib import closing
 
 
 # Global Configs
@@ -34,17 +35,31 @@ app.config.from_object(__name__)
 # Database Functions
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
+
 def init_db():
 	with closing(connect_db()) as db:
 		with app.open_resource('schema.sql') as f:
 			db.cursor().executescript(f.read())
 		db.commit()
 
+def query_db(query, args=(), one=False):
+	cur = g.db.execute(query, args)
+	rv = [dict((cur.description[idx][0], value)
+		for idx, value in enumerate(row)) for row in cur.fetchall()]
+	return (rv[0] if rv else None) if one else rv
+
+@app.before_request
+def before_request(): g.db = connect_db()
+
+@app.teardown_request
+def teardown_request(exception): g.db.close()
+
+
 # Helper Functions
-def sub_cypher(num, offset):
-	"""Number substitution offset cypher. Don't use offset values 0-9."""
+def sub_cypher(ip, offset):
+	"""Number substitution offset cypher(protect ips). Don't use offset values 0-9."""
 	# Implement Better Cypher: rotate((ip % sum1bits(ip) ), sum0bits(ip))
-	return [(abs(int(x) - offset)%10) if x.isdigit() else '.' for x in num]
+	return [(abs(int(x) - offset)%10) if x.isdigit() else '.' for x in ip]
 
 def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
@@ -65,53 +80,54 @@ def get_html(save_time, ip, trans_id):
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
-	data = Database(DATABASE_FILE, DATABASE_TABLE)
 	captcha = (randrange(1, 15), randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
-	recent_drips = data.get_recent()
-	recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
-	recent = ''.join(map(str, recent_drips_html))
-	stats = 3060 + data.get_count()[0][0]
-	return render_template('index.html', recent=recent, form_submit=form_submit_status,
-						   captcha=captcha, captcha_awns=captcha_awns, stats=stats)
+
+	# recent_drips = data.get_recent()
+	# recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
+	# recent = ''.join(map(str, recent_drips_html))
+	# stats = 3060 + data.get_count()[0][0]
+
+	return render_template('index.html', recent=None, form_submit=form_submit_status,
+						   captcha=captcha, captcha_awns=captcha_awns, stats=0)
 
 
 # Routes
 @app.route('/')
-def index(): return "test"
+def index(): get_index()
 
-@app.route('/add', methods=['POST'])
-def add(): 
-	ip = str(request.remote_addr)
-	try:
-		if request.form['captcha'] != request.form['captcha_awns']: 
-			raise ValueError
-		print("Good drip request. Saving to database...")
-		data = Database(DATABASE_FILE, DATABASE_TABLE)
-		DripRequest(request.form['address'], request.form['coupon'],
-				    ip).save(data)
-		return redirect('/good')
-	except ValueError:
-		print("Bad drip request. Redirecting...")
-		return redirect('/bad')
-	except LookupError:
-		print("Duplicate IP or Address. Redirecting...")
-		return redirect('/duplicate')
-	else:
-		print("Unexplained failure.")
-		return redirect('/bad')
+# @app.route('/add', methods=['POST'])
+# def add(): 
+# 	ip = str(request.remote_addr)
+# 	try:
+# 		if request.form['captcha'] != request.form['captcha_awns']: 
+# 			raise ValueError
+# 		print("Good drip request. Saving to database...")
+# 		data = Database(DATABASE_FILE, DATABASE_TABLE)
+# 		DripRequest(request.form['address'], request.form['coupon'],
+# 				    ip).save(data)
+# 		return redirect('/good')
+# 	except ValueError:
+# 		print("Bad drip request. Redirecting...")
+# 		return redirect('/bad')
+# 	except LookupError:
+# 		print("Duplicate IP or Address. Redirecting...")
+# 		return redirect('/duplicate')
+# 	else:
+# 		print("Unexplained failure.")
+# 		return redirect('/bad')
 
-@app.route('/good')
-def good(): return get_index("good")
-@app.route('/bad')
-def bad(): return get_index("bad")
-@app.route('/duplicate')
-def duplicate(): return get_index("duplicate")
+# @app.route('/good')
+# def good(): return get_index("good")
+# @app.route('/bad')
+# def bad(): return get_index("bad")
+# @app.route('/duplicate')
+# def duplicate(): return get_index("duplicate")
 
-@app.route('/chat')
-def chat(): return render_template('chat.html')
-@app.route('/resources')
-def resources(): return render_template('resources.html')
+# @app.route('/chat')
+# def chat(): return render_template('chat.html')
+# @app.route('/resources')
+# def resources(): return render_template('resources.html')
 
 
 if __name__ == '__main__':
