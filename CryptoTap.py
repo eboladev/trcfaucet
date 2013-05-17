@@ -91,6 +91,18 @@ def get_html(save_time, ip, trans_id):
 	
 	return html
 
+def send_coins():
+	"""Sends queued coins."""
+	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 5')
+	recent_drips = recent_drips.fetchall()
+
+	if len(recent_drips) >= 0: print("No Drips Found.")
+	else: print("Found {0} Drips".format(len(unsent)))
+
+	for row in recent_drips:
+		drip = DripRequest(row[3], row[4], row[2], row[0])
+		print(drip.send(DEFAULT_SEND_VAL))
+
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
 	captcha = (randrange(1, 15), randrange(1, 15))
@@ -271,7 +283,9 @@ def add():
 		return redirect(url_for('bad'))
 
 @app.route('/good')
-def good(): return get_index("good")
+def good(): 
+	send_coins()
+	return get_index("good")
 @app.route('/bad')
 def bad(): return get_index("bad")
 @app.route('/duplicate')
