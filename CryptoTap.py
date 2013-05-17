@@ -113,7 +113,7 @@ def add():
 		if captcha_try != request.form['captcha_awns']: 
 			raise ValueError
 		print("Good drip request. Saving to database...")
-		DripRequest(request.form['address'], request.form['coupon'], ip).save(data)
+		DripRequest(request.form['address'], request.form['coupon'], ip).save()
 		return redirect(url_for('good'))
 	except ValueError:
 		print("Bad drip request. Redirecting...")
