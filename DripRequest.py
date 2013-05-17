@@ -11,9 +11,11 @@ import string
 import sqlite3
 import commands
 
+
 COIN_NAME = "TRC"
 COIN_CLIENT = "terracoind"
 REQUEST_LIMIT = 3
+
 
 # Hard Coded Coupons
 def lookup_coupon(coupon):
@@ -21,84 +23,6 @@ def lookup_coupon(coupon):
 	elif coupon == "DOUBLEMONEY": return 2
 	return 1 
 
-class Database:
-	def __init__(self, datebase_path, database_table):
-		"""
-		Initializes database vars, and installs database if the database file
-		is not found.
-
-		Arguments:
-		datebase_path  -- Path to the sqlite3 databse file.
-		database_table -- Name of the sql table. 
-
-		Data Members:
-		sql_database   -- Path to the sqlite3 databse file.
-		sql_table      -- Name of the sql table. 
-
-		"""
-		self.sql_database = datebase_path
-		self.sql_table = database_table
-		if not os.path.exists(datebase_path):
-			self.install()
-
-	# SQL Methods
-	def install(self):
-		"""Installs the database, and inserts the first item."""
-		# Create Database
-		text = "CREATE TABLE {0}(id INTEGER NOT NULL,crdate TEXT(25),"
-		text = text.format(self.sql_table)
-		text += "ip TEXT(25), address TEXT(50),"
-		text += "coupon TEXT(25),trans_id TEXT(25),PRIMARY KEY (id))"
-		self.command(text)
-		# Insert First Row
-		ti = "bf9433692129d60f10f47d391c5b8435fc3852d0cd7c1f19db62403c5df89b3f"
-		self.insert("69.87.160.3","1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa",
-				    "DOUBLEMONEY", ti)
-
-	def command(self, text):
-		"""Executes a single SQL command."""
-		con = sqlite3.connect(self.sql_database)
-		con.execute(text)
-		con.commit()
-
-	def query(self, text):
-		"""Executes a single SQL query."""
-		conn = sqlite3.connect(self.sql_database)
-		c = conn.cursor()
-		c.execute(text)
-		return c.fetchall()
-
-	# Drip Methods
-	def count_address(self, address):
-		text = "SELECT * FROM {0} WHERE address = '{1}'"
-		return len(self.query(text.format(self.sql_table, address)))
-
-	def count_ip(self, ip):
-		text = "SELECT * FROM {0} WHERE ip = '{1}'"
-		return len(self.query(text.format(self.sql_table, ip)))
-
-	def update_drip(self, drip_id, trans_id):
-		text = "UPDATE {0} SET trans_id = '{1}' WHERE id = '{2}'"
-		self.command(text.format(self.sql_table, trans_id, drip_id))
-
-	def insert(self, ip, address, coupon, trans_id):
-		text = "INSERT INTO {0} (id, crdate, ip, address, coupon, trans_id)"
-		text = text.format(self.sql_table)
-		text += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
-		self.command(text.format(ip, address, coupon, trans_id))
-
-	# Get Methods
-	def get_recent(self, limit = 10):
-		text = "SELECT * FROM {0} ORDER BY id DESC LIMIT {1}"
-		return self.query(text.format(self.sql_table, limit))
-
-	def get_unsent(self, limit = 10):
-		text = "SELECT * FROM {0} WHERE trans_id = '{1}' LIMIT {2}"
-		return self.query(text.format(self.sql_table, "UNSENT", limit))
-
-	def get_count(self):
-		text = "SELECT Count(*) FROM {0}"
-		return self.query(text.format(self.sql_table))
 
 class DripValidate:
 	def __init__(self):
@@ -249,10 +173,10 @@ def validate_unit_test():
 
 def drip_unit_test():
 	# Insert Two Drip Objects
-	drip = DripRequest('today', '1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa',
+	drip = DripRequest('1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa',
 					   'DOUBLEMONEY', '69.87.160.3')
 	drip.save()
-	drip2 = DripRequest('today', '1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa',
+	drip2 = DripRequest('1DarXYYGgvyHFQKZKsgUq676A9CK7D7FYa',
 						'', '171.247.220.64')
 	drip2.save()
 
