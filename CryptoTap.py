@@ -92,7 +92,7 @@ def get_index(form_submit_status = None):
 	captcha_awns = captcha[0] + captcha[1]
 
 	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 10')
-	recent_drips_html = [get_html(x[1], x[2], x[5])  for row in cur.fetchall()]
+	recent_drips_html = [get_html(x[1], x[2], x[5]) for row in recent_drips.fetchall()]
 	recent = ''.join(map(str, recent_drips_html))
 	
 	cur = g.db.execute('SELECT Count(*) FROM drip_request')
