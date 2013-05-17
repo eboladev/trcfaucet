@@ -106,7 +106,11 @@ def get_index(form_submit_status = None):
 
 # Routes
 @app.route('/')
-def index(): get_index()
+def index(): 
+	cur = g.db.execute('SELECT Count(*) FROM drip_request')
+	entries = cur.fetchone()
+	print(entries)
+	return "test"
 
 # @app.route('/add', methods=['POST'])
 # def add(): 
