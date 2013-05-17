@@ -99,9 +99,12 @@ def send_coins():
 	if len(recent_drips) >= 0: print("No Drips Found.")
 	else: print("Found {0} Drips".format(len(unsent)))
 
-	for row in recent_drips:
-		drip = DripRequest(row[3], row[4], row[2], row[0])
-		print(drip.send(DEFAULT_SEND_VAL))
+	try:
+		for row in recent_drips:
+			drip = DripRequest(row[3], row[4], row[2], row[0])
+			print(drip.send(DEFAULT_SEND_VAL))
+	else:
+		print("Something Broke...")
 
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
