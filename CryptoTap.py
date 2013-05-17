@@ -247,7 +247,7 @@ class DripRequest:
 			trans_id = commands.getstatusoutput(command)[1]
 		 
 			# Send Payment
-			query = 'update drip_request set trans_id = '{0}' where id = {1}'
+			query = "update drip_request set trans_id = '{0}' where id = {1}"
 			g.db.execute(query.format(trans_id, self.drip_id))
 			g.db.commit()
 
