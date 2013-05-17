@@ -127,17 +127,17 @@ def index(): return get_index()
 # 		print("Unexplained failure.")
 # 		return redirect('/bad')
 
-# @app.route('/good')
-# def good(): return get_index("good")
-# @app.route('/bad')
-# def bad(): return get_index("bad")
-# @app.route('/duplicate')
-# def duplicate(): return get_index("duplicate")
+@app.route('/good')
+def good(): return get_index("good")
+@app.route('/bad')
+def bad(): return get_index("bad")
+@app.route('/duplicate')
+def duplicate(): return get_index("duplicate")
 
-# @app.route('/chat')
-# def chat(): return render_template('chat.html')
-# @app.route('/resources')
-# def resources(): return render_template('resources.html')
+@app.route('/chat')
+def chat(): return render_template('chat.html')
+@app.route('/resources')
+def resources(): return render_template('resources.html')
 
 
 if __name__ == '__main__':
