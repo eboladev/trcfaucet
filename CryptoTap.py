@@ -95,7 +95,9 @@ def get_index(form_submit_status = None):
 	# recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
 	# recent = ''.join(map(str, recent_drips_html))
 	
-	stats = 3060 + int(query_db('SELECT Count(*) FROM drip_request'))
+	qr = query_db('SELECT Count(*) FROM drip_request')
+	print(qr)
+	stats = 3060
 	print(stats)
 
 	return render_template('index.html', recent=None, form_submit=form_submit_status,
