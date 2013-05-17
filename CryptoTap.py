@@ -4,7 +4,7 @@ from random import randrange
 from datetime import datetime
 from datetime import timedelta
 
-from flask import ge
+from flask import g
 from flask import flash
 from flask import abort
 from flask import Flask
@@ -72,7 +72,7 @@ def get_index(form_submit_status = None):
 
 # Routes
 @app.route('/')
-def index(): pass
+def index(): return "test"
 
 @app.route('/add', methods=['POST'])
 def add(): 
