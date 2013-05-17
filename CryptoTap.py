@@ -91,26 +91,20 @@ def get_index(form_submit_status = None):
 	captcha = (randrange(1, 15), randrange(1, 15))
 	captcha_awns = captcha[0] + captcha[1]
 
-	# recent_drips = data.get_recent()
-	# recent_drips_html = [get_html(x[1], x[2], x[5]) for x in recent_drips if True]
-	# recent = ''.join(map(str, recent_drips_html))
+	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 10')
+	recent_drips_html = [get_html(x[1], x[2], x[5])  for row in cur.fetchall()]
+	recent = ''.join(map(str, recent_drips_html))
 	
-	qr = query_db('SELECT Count(*) FROM drip_request')
-	print(qr)
-	stats = 3060
-	print(stats)
+	cur = g.db.execute('SELECT Count(*) FROM drip_request')
+	stats = 3060 + int(cur.fetchone()[0])
 
-	return render_template('index.html', recent=None, form_submit=form_submit_status,
+	return render_template('index.html', recent=recent, form_submit=form_submit_status,
 						   captcha=captcha, captcha_awns=captcha_awns, stats=stats)
 
 
 # Routes
 @app.route('/')
-def index(): 
-	cur = g.db.execute('SELECT Count(*) FROM drip_request')
-	entries = cur.fetchone()
-	print(entries)
-	return "test"
+def index(): get_index()
 
 # @app.route('/add', methods=['POST'])
 # def add(): 
