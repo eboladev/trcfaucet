@@ -104,7 +104,7 @@ def get_index(form_submit_status = None):
 
 # Routes
 @app.route('/')
-def index(): get_index()
+def index(): return get_index()
 
 # @app.route('/add', methods=['POST'])
 # def add(): 
