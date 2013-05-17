@@ -31,6 +31,13 @@ DEFAULT_SEND_VAL = 0.0001
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+# Request
+@app.before_request
+def before_request(): g.db = connect_db()
+
+@app.teardown_request
+def teardown_request(exception): g.db.close()
+
 
 # Database Functions
 def connect_db():
@@ -47,12 +54,6 @@ def query_db(query, args=(), one=False):
 	rv = [dict((cur.description[idx][0], value)
 		for idx, value in enumerate(row)) for row in cur.fetchall()]
 	return (rv[0] if rv else None) if one else rv
-
-@app.before_request
-def before_request(): g.db = connect_db()
-
-@app.teardown_request
-def teardown_request(exception): g.db.close()
 
 
 # Helper Functions
