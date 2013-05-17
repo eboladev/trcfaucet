@@ -31,10 +31,16 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
-# Helper Functions
+# Database Functions
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
+def init_db():
+	with closing(connect_db()) as db:
+		with app.open_resource('schema.sql') as f:
+			db.cursor().executescript(f.read())
+		db.commit()
 
+# Helper Functions
 def sub_cypher(num, offset):
 	"""Number substitution offset cypher. Don't use offset values 0-9."""
 	# Implement Better Cypher: rotate((ip % sum1bits(ip) ), sum0bits(ip))
