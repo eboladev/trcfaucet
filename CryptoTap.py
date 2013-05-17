@@ -114,7 +114,7 @@ def add():
 			raise ValueError
 		print("Good drip request. Saving to database...")
 		# DripRequest(request.form['address'], request.form['coupon'], ip).save(data)
-		 return redirect(url_for('index'))
+		return redirect(url_for('index'))
 	except ValueError:
 		print("Bad drip request. Redirecting...")
 		return redirect(url_for('bad'))
