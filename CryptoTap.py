@@ -17,8 +17,6 @@ from flask import redirect
 from flask import render_template
 from contextlib import closing
 
-from DripRequest import *
-
 
 # Global Configs
 DATABASE = '/root/trc.db'
@@ -205,7 +203,7 @@ class DripRequest:
 		request_str = "IP: {0}/{1} and Address: {2}/{3}"
 		print(request_str.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
 		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
-			g.db.execute('insert into entries (ip, address, coupon, trans_id) values (?, ?, ?, ?)',
+			g.db.execute('insert into drip_request (ip, address, coupon, trans_id) values (?, ?, ?, ?)',
 			[self.ip, self.address, self.coupon, "UNSENT"])
 			g.db.commit()
 
@@ -246,7 +244,7 @@ class DripRequest:
 		else:
 			return "Insufficient Funds!"
 
-			
+
 # Routes
 @app.route('/')
 def index(): return get_index()
