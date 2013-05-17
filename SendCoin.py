@@ -16,7 +16,7 @@ def send_coins():
 
 	for row in recent_drips:
 		drip = DripRequest(row[3], row[4], row[2], row[0])
-		print(drip.send(DEFAULT_SEND_VAL, data))
+		print(drip.send(DEFAULT_SEND_VAL))
 
 # Infinite Loop...
 while True:

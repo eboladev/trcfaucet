@@ -101,14 +101,24 @@ class DripRequest:
 		text = '{0} {1} {2} {3} {4}'
 		return text.format(self.address, self.coupon, self.ip, self.drip_id)
 
-	def save(self, data):
-		"""Insert drip request into databse."""
-		num_ip = data.count_ip(self.ip)
-		num_address = data.count_address(self.address)
+	def count_unique(row, val):
+		query = "SELECT Count(*) FROM drip_request WHERE {0} = '{1}'"
+		cur = g.db.execute(query.format(row, val))
+		return int(cur.fetchone()[0])
+
+	def save(self):
+		"""Insert drip request into database."""
+		num_ip = self.count_unique("ip", self.ip)
+		num_address = self.count_unique("address", self.address)
 		request_str = "IP: {0}/{1} and Address: {2}/{3}"
 		print(request_str.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
 		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
 			data.insert(self.ip, self.address, self.coupon, "UNSENT")
+
+			g.db.execute('insert into entries (ip, address, coupon, trans_id) values (?, ?, ?, ?)',
+			[self.ip, self.address, self.coupon, "UNSENT"])
+			g.db.commit()
+
 		else:
 			raise LookupError
 
@@ -116,7 +126,7 @@ class DripRequest:
 		"Retrieves the current balance."
 		return float(commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))[1])
 
-	def send(self, amount, data):
+	def send(self, amount):
 		"""
 		Send the specified amount to the drip request, time whatever the
 		coupon code specifies. Uses the following unix command to do so:
@@ -136,13 +146,15 @@ class DripRequest:
 			trans_id = commands.getstatusoutput(command)[1]
 		 
 			# Send Payment
-			data.update_drip(self.drip_id, trans_id)
+			g.db.execute('update drip_request set (trans_id) values (?) where id = ?',
+					   	 [trans_id, self.drip_id])
+			g.db.commit()
 
 			# Console Message
 			con_message = "Sent {0} {1} to {2}. Traction ID: {3}"
 			return con_message.format(str(amount), COIN_NAME, self.address, trans_id)
 		else:
-			print("Insufficient Funds!")
+			return "Insufficient Funds!"
 
 
 # Unit Tests
