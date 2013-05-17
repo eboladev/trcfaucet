@@ -11,6 +11,7 @@ import string
 import sqlite3
 import commands
 
+from flask import g
 
 COIN_NAME = "TRC"
 COIN_CLIENT = "terracoind"
