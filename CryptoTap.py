@@ -1,6 +1,5 @@
 import sqlite3
 import hashlib
-from DripRequest import *
 from random import randrange
 from datetime import datetime
 from datetime import timedelta
@@ -13,6 +12,8 @@ from flask import request
 from flask import redirect
 from flask import render_template
 from contextlib import closing
+
+from DripRequest import *
 
 
 # Global Configs
