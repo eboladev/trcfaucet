@@ -1,33 +1,40 @@
-import datetime
-from flask import Flask
-from flask import request
+import sqlite3
 from DripRequest import *
-from flask import redirect
 from random import randrange
 from datetime import datetime
 from datetime import timedelta
+
+from flask import ge
+from flask import flash
+from flask import abort
+from flask import Flask
+from flask import url_for
+from flask import request
+from flask import session
+from flask import redirect
 from flask import render_template
 
-app = Flask(__name__)
 
-# Problems:
-# Handle Input Better
-# Improve Captcha Security with SHA Hashing
+# Global Configs
+DATABASE = '/root/trc.db'
+DEBUG = True
+SECRET_KEY = '31491de80d74f54da681c40cc4d08c41a35939ac'
+USERNAME = 'trcadmin'
+PASSWORD = 'trcs3cur3'
 
-# Features:
-# Autodeploy Using Github Hooks
-# Revamp Coupon System
-
-# Version:
-# Clean Code and Document
-# More Earning Methods
-
-# Globals
-DATABASE_FILE = '/root/trc.db'
 DATABASE_TABLE = 'drip_request'
 DEFAULT_SEND_VAL = 0.0001
 
+
+# Load Flask
+app = Flask(__name__)
+app.config.from_object(__name__)
+
+
 # Helper Functions
+def connect_db():
+	return sqlite3.connect(app.config['DATABASE'])
+
 def sub_cypher(num, offset):
 	"""Number substitution offset cypher. Don't use offset values 0-9."""
 	# Implement Better Cypher: rotate((ip % sum1bits(ip) ), sum0bits(ip))
@@ -62,16 +69,10 @@ def get_index(form_submit_status = None):
 	return render_template('index.html', recent=recent, form_submit=form_submit_status,
 						   captcha=captcha, captcha_awns=captcha_awns, stats=stats)
 
-def send_coins():
-	"""Sends queued coins."""
-	data = Database(DATABASE_FILE, DATABASE_TABLE)
-	for i in data.get_unsent():
-		DripRequest(i[3], i[4], i[2], i[0]).send(DEFAULT_SEND_VAL, data)
-	return "Sent!"
 
 # Routes
 @app.route('/')
-def index(): return get_index()
+def index(): pass
 
 @app.route('/add', methods=['POST'])
 def add(): 
@@ -94,12 +95,8 @@ def add():
 		print("Unexplained failure.")
 		return redirect('/bad')
 
-@app.route('/send')
-def send(): return send_coins()
 @app.route('/good')
-def good(): 
-	send_coins()
-	return get_index("good")
+def good(): return get_index("good")
 @app.route('/bad')
 def bad(): return get_index("bad")
 @app.route('/duplicate')
@@ -110,9 +107,6 @@ def chat(): return render_template('chat.html')
 @app.route('/resources')
 def resources(): return render_template('resources.html')
 
-#@app.route('/gitdeploy-hj83k5')
-#def deploy(): subprocess.call(["sh /root/deploy.sh"], cwd='/root/')
 
-# Main
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80)
+	app.run(host='0.0.0.0', port=5000, debug=True)
