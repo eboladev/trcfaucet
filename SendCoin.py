@@ -1,5 +1,6 @@
 from time import sleep
-from DripRequest import *
+from CryptoTap import DripValidate
+from CryptoTap import DripRequest
 
 # Globals
 DATABASE_FILE = '/root/trc.db'

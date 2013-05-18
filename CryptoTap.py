@@ -32,11 +32,12 @@ COIN_CLIENT = "terracoind"
 REQUEST_LIMIT = 3
 
 
-# Load Flask
+# Load Flask -------------------------------------------------------------------
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-# Database Functions
+
+# Database Functions -----------------------------------------------------------
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
 
@@ -68,28 +69,35 @@ def query_db(query, args=(), one=False):
 	return (rv[0] if rv else None) if one else rv
 
 
-# Helper Functions
+# Helper Functions -------------------------------------------------------------
 def sub_cypher(ip, offset):
-	"""Number substitution offset cypher(protect ips). Don't use offset values 0-9."""
-	# Implement Better Cypher: rotate((ip % sum1bits(ip) ), sum0bits(ip))
+	"""
+	A basic number substitution cypher using a number offset. Don't use offset
+	values 0-9, as then all values will be either 0 or 1. This is used to 
+	obfuscated the IP address before the are publicly displayed.
+
+	The	cypher is currently easily reversed if the offset is known. Here is
+	another implementation that was suggested: 
+		rotate((ip % sum1bits(ip) ), sum0bits(ip))
+
+	"""
 	return [(abs(int(x) - offset)%10) if x.isdigit() else '.' for x in ip]
 
 def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
-	diff_time = datetime.now() - datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
+	diff_time = datetime.now()-datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
 	diff_time = divmod(diff_time.seconds, 60)
 	diff_time = "{0} mins, {1} secs ago".format(diff_time[0], diff_time[1])
 	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 655)))
+
 	if trans_id == "UNSENT":
 		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
-		html = html.format(diff_time, obfuscated_ip)
+		return html.format(diff_time, obfuscated_ip)
 	else:
 		short_trans_id = trans_id[:37] + "..."
-		trans_id_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
+		trans_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
 		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
-		html = html.format(diff_time, obfuscated_ip, trans_id_url, short_trans_id)
-	
-	return html
+		return html.format(diff_time, obfuscated_ip, trans_url, short_trans_id)
 
 def send_coins():
 	"""Sends queued coins."""
@@ -117,24 +125,27 @@ def get_index(form_submit_status = None):
 	captcha = (randrange(1, 15), randrange(1, 15))
 	captcha_awns = hashlib.sha1(str(captcha[0] + captcha[1])).hexdigest()
 
-	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 10')
-	recent_drips_html = [get_html(row[1], row[2], row[5]) for row in recent_drips.fetchall()]
-	recent = ''.join(map(str, recent_drips_html))
+	query = 'SELECT * FROM drip_request ORDER BY id DESC LIMIT 10'
+	recent = g.db.execute(query)
+	recent = [get_html(row[1], row[2], row[5]) for row in recent.fetchall()]
+	recent = ''.join(map(str, recent))
 	
 	cur = g.db.execute('SELECT Count(*) FROM drip_request')
 	stats = 3349 + int(cur.fetchone()[0])
 
-	return render_template('index.html', recent=recent, form_submit=form_submit_status,
-						   captcha=captcha, captcha_awns=captcha_awns, stats=stats)
+	return render_template('index.html', recent=recent,
+						   form_submit=form_submit_status, captcha=captcha,
+						   captcha_awns=captcha_awns, stats=stats)
 
 
-# Hard Coded Coupons
+# Coupon System  ---------------------------------------------------------------
 def lookup_coupon(coupon):
 	if coupon == "MOREMONEY": return 1.5
 	elif coupon == "DOUBLEMONEY": return 2
 	return 1 
 
 
+# Classes ----------------------------------------------------------------------
 class DripValidate:
 	def __init__(self):
 		"""Used to validate input before database use."""
@@ -146,9 +157,9 @@ class DripValidate:
 		return pattern.sub('', in_str)
 
 	def validate_address(self, address):
-		# Source: http://bit.ly/17OhFP5
 		"""
 		Does simple validation of a bitcoin address. 
+		Source: http://bit.ly/17OhFP5
 
 		param : address : an ASCII or unicode string, of a bitcoin address.
 		returns : boolean, indicating that the address has a correct format.
@@ -222,7 +233,10 @@ class DripRequest:
 		num_ip = self.count_unique("ip", self.ip)
 		num_address = self.count_unique("address", self.address)
 		request_str = "IP: {0}/{1} and Address: {2}/{3}"
-		print(request_str.format(num_ip, REQUEST_LIMIT, num_address, REQUEST_LIMIT))
+		request_str = request_str.format(num_ip, REQUEST_LIMIT, num_address,
+										 REQUEST_LIMIT)
+		print(request_str)
+
 		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
 			query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
 			query += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
@@ -233,7 +247,8 @@ class DripRequest:
 
 	def get_balance(self):
 		"Retrieves the current balance."
-		return float(commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))[1])
+		balance = commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))
+		return float(balance[0])
 
 	def send(self, amount):
 		"""
@@ -261,12 +276,12 @@ class DripRequest:
 
 			# Console Message
 			con_message = "Sent {0} {1} to {2}. Traction ID: {3}"
-			return con_message.format(str(amount), COIN_NAME, self.address, trans_id)
+			return con_message.format(amount, COIN_NAME, self.address, trans_id)
 		else:
 			return "Insufficient Funds!"
 
 
-# Routes
+# Routes -----------------------------------------------------------------------
 @app.route('/')
 def index(): return get_index()
 
@@ -305,5 +320,6 @@ def chat(): return render_template('chat.html')
 def resources(): return render_template('resources.html')
 
 
+# Main -------------------------------------------------------------------------
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, debug=True)
