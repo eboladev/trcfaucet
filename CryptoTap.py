@@ -153,7 +153,7 @@ class DripValidate:
 		param : address : an ASCII or unicode string, of a bitcoin address.
 		returns : boolean, indicating that the address has a correct format.
 
-		"""
+		""" 
 		
 		address = self.clean(address)
 		# The first character indicates the "version" of the address.
@@ -228,7 +228,6 @@ class DripRequest:
 			query += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
 			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
 			g.db.commit()
-
 		else:
 			raise LookupError
 
@@ -278,8 +277,8 @@ def add():
 		captcha_try = hashlib.sha1(request.form['captcha']).hexdigest()
 		if captcha_try != request.form['captcha_awns']: 
 			raise ValueError
-		print("Good drip request. Saving to database...")
 		DripRequest(request.form['address'], request.form['coupon'], ip).save()
+		print("Good drip request. Saving to database...")
 		return redirect(url_for('good'))
 	except ValueError:
 		print("Bad drip request. Redirecting...")
