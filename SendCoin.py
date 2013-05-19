@@ -8,17 +8,18 @@ from CryptoTap import DripRequest
 # Globals ----------------------------------------------------------------------
 DATABASE_FILE = '/root/trc.db'
 COIN_CLIENT = 'terracoind'
+COIN_NAME = 'TRC'
 DEFAULT_SEND_VAL = 0.0001
 HARD_LIMIT = 0.01
 LOW_BAL_LIMIT = 0.001
 
 
 # Send Function ----------------------------------------------------------------
-def get_balance(self):
+def get_balance():
 	"Retrieves the current balance."
 	return float(commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))[1])
 
-def send(self, drip_id, address, coupon, amount, conn):
+def send(drip_id, address, coupon, amount, conn):
 		"""
 		Send the specified amount to the drip request, time whatever the
 		coupon code specifies. Uses the following unix command to do so:
@@ -28,14 +29,14 @@ def send(self, drip_id, address, coupon, amount, conn):
 		"""
 
 		# Make Shell Command
-		amount *= Coupon.lookup(coupon)
+		amount *= Coupon().lookup(coupon)
 		 # hardcoded limit at 0.1 TRC in case the coupon system breaks
 		if amount > HARD_LIMIT: amount = HARD_LIMIT
 		
 		if (get_balance() - amount) > LOW_BAL_LIMIT:
 			# Construct Command
 			command = '{0} sendtoaddress {1} {2}'
-			command = command.format(COIN_CLIENT, self.address, str(amount))
+			command = command.format(COIN_CLIENT, address, str(amount))
 			trans_id = commands.getstatusoutput(command)[1]
 
 			# Update
@@ -47,7 +48,7 @@ def send(self, drip_id, address, coupon, amount, conn):
 
 			# Console Message
 			con_message = "Sent {0} {1} to {2}. Traction ID: {3}"
-			return con_message.format(amount, COIN_NAME, self.address, trans_id)
+			return con_message.format(amount, COIN_NAME, address, trans_id)
 		else:
 			return "Insufficient Funds!"
 
