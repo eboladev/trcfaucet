@@ -3,11 +3,14 @@ from time import sleep
 from CryptoTap import DripValidate
 from CryptoTap import DripRequest
 
-# Globals
+
+# Globals ----------------------------------------------------------------------
 DATABASE_FILE = '/root/trc.db'
 DATABASE_TABLE = 'drip_request'
 DEFAULT_SEND_VAL = 0.0001
 
+
+# Functions --------------------------------------------------------------------
 def send_coins():
 	"""Sends queued coins."""
 	# Connect to Database
@@ -19,13 +22,19 @@ def send_coins():
 	c.execute(query.format("UNSENT"))
 
 	row = c.fetchone()
-	print(row)
-	# DripRequest(row[3], row[4], row[2], row[0])
+	if row == None:
+		return "No drips found..."
+	else:
+		try:
+			drip = DripRequest(row[3], row[4], row[2], row[0])
+			return "Done"
+		except ValueError: return "Something Broke(ValueError)..." 
+		except:	return "Something Broke(SomeError)..."
 
 
-# Infinite Loop...
+# Infinite Loop ----------------------------------------------------------------
 while True:
 	print("Checking for drips...")
-	send_coins()
+	print(send_coins())
 	print("Sleeping for 10 seconds...")
 	sleep(1)

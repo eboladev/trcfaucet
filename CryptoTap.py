@@ -168,12 +168,7 @@ class DripRequest:
 			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
 			g.db.commit()
 		else:
-			raise LookupError
-
-	def get_balance(self):
-		"Retrieves the current balance."
-		balance = commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))
-		return float(balance[0])
+			raise LookupErrors
 
 	def send(self, amount):
 		"""
@@ -235,28 +230,7 @@ def get_html(save_time, ip, trans_id):
 		trans_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
 		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
 		return html.format(diff_time, obfuscated_ip, trans_url, short_trans_id)
-
-def send_coins():
-	"""Sends queued coins."""
-	query = "SELECT * FROM drip_request WHERE trans_id = '{0}' LIMIT {1}"
-	query = query.format("UNSENT", 5)
-	recent_drips = g.db.execute(query)
-	recent_drips = recent_drips.fetchall()
-
-	if len(recent_drips) >= 0: print("No Drips Found.")
-	else: print("Found {0} Drips".format(len(unsent)))
-
-	try:
-		for row in recent_drips:
-			drip = DripRequest(row[3], row[4], row[2], row[0])
-			print(drip.send(DEFAULT_SEND_VAL))
-		return "Done"
-	except ValueError:
-		print("Something Broke1...")
-	except:
-		print("Something Broke2...")
 		
-
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success/error page."""
 	captcha = (randrange(1, 15), randrange(1, 15))
