@@ -79,7 +79,6 @@ class DripRequest:
 
 	# Magics -------------------------------------------------------------------
 	def __init__(self, address, coupon, ip, drip_id = 0):
-		vall = DripValidate()
 		if not self.validate_address(str(address)): 
 			raise ValueError("Invalid Terracoin Address.")
 		elif not self.validate_coupon(str(coupon)): coupon = "INVALID"
@@ -116,7 +115,7 @@ class DripRequest:
 		# alphanumeric characters without : l I O 0
 		CHARS_OK = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 		
-		# We do not check the high length limit of the adress. 
+		# We do not check the high length limit of the address. 
 		# Usually, it is 35, but nobody knows what could happen in the future.
 		if len(address) < 27:
 			return False
@@ -124,7 +123,7 @@ class DripRequest:
 			return False
 
 		# We use the function "all" by passing it an enumerator as parameter. 
-		# It does a little optimisation : 
+		# It does a little optimization : 
 		# if one of the character is not valid, the next ones are not tested.
 		return all( ( char in CHARS_OK for char in address[1:] ) )
 	
