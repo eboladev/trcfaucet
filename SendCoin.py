@@ -1,3 +1,4 @@
+import sqlite3
 from time import sleep
 from CryptoTap import DripValidate
 from CryptoTap import DripRequest
@@ -9,19 +10,22 @@ DEFAULT_SEND_VAL = 0.0001
 
 def send_coins():
 	"""Sends queued coins."""
-	recent_drips = g.db.execute('SELECT * FROM drip_request ORDER BY id DESC LIMIT 5')
-	recent_drips = recent_drips.fetchall()
+	# Connect to Database
+	conn = sqlite3.connect(DATABASE_FILE)
+	c = conn.cursor()
 
-	if len(recent_drips) >= 0: print("No Drips Found.")
-	else: print("Found {0} Drips".format(len(unsent)))
+	# Do Query
+	query = "SELECT * FROM drip_request WHERE trans_id='UNSENT' LIMIT 1"
+	c.execute(query.format("UNSENT"))
 
-	for row in recent_drips:
-		drip = DripRequest(row[3], row[4], row[2], row[0])
-		print(drip.send(DEFAULT_SEND_VAL))
+	row = c.fetchone()
+	print(row)
+	# DripRequest(row[3], row[4], row[2], row[0])
+
 
 # Infinite Loop...
 while True:
 	print("Checking for drips...")
 	send_coins()
 	print("Sleeping for 10 seconds...")
-	sleep(10)
+	sleep(1)
