@@ -3,13 +3,11 @@ import re
 import string
 import sqlite3
 import hashlib
-import commands
 from random import randrange
 from datetime import datetime
 from datetime import timedelta
 
 from flask import g
-from flask import abort
 from flask import Flask
 from flask import url_for
 from flask import request
@@ -20,7 +18,6 @@ from contextlib import closing
 
 # Global Configs ---------------------------------------------------------------
 DATABASE = '/root/trc.db'
-DEBUG = True
 SECRET_KEY = '31491de80d74f54da681c40cc4d08c41a35939ac'
 USERNAME = 'trcadmin'
 PASSWORD = 'trcs3cur3'
@@ -58,10 +55,13 @@ def init_db():
 
 
 # Coupon System  ---------------------------------------------------------------
-def lookup_coupon(coupon):
-	if coupon == "MOREMONEY": return 1.5
-	elif coupon == "DOUBLEMONEY": return 2
-	return 1 
+class Coupon:
+	def __init__(self):
+		pass
+	def lookup(self, coupon):
+		if coupon == "MOREMONEY": return 1.5
+		elif coupon == "DOUBLEMONEY": return 2
+		return 1 
 
 
 # Classes ----------------------------------------------------------------------
@@ -131,7 +131,7 @@ class DripRequest:
 		"""Makes sure the coupon is alphanumeric and less than 12 chars."""
 		coupon = self.clean(coupon)
 		cond1 = re.match('^[\w]+$', coupon) and len(coupon)<12
-		cond2 = (lookup_coupon(coupon) != 1)
+		cond2 = (Coupon().lookup(coupon) != 1)
 		return (cond1 and cond2)
 
 	def validate_ip(self, ip):
@@ -160,6 +160,9 @@ class DripRequest:
 			g.db.commit()
 		else:
 			raise LookupErrors
+
+	def send(self):
+		return(self.address, self.coupon)
 
 
 # Helper Functions -------------------------------------------------------------
