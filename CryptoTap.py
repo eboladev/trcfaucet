@@ -248,6 +248,8 @@ def duplicate(): return get_index("duplicate")
 def chat(): return render_template('chat.html')
 @app.route('/resources')
 def resources(): return render_template('resources.html')
+@app.route('/guide')
+def resources(): return render_template('guide.html')
 
 
 # Main -------------------------------------------------------------------------
