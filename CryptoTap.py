@@ -137,8 +137,11 @@ class DripRequest:
 
 	# Database Methods ---------------------------------------------------------
 	def count_unique(self, row, val):
-		query = "SELECT Count(*) FROM drip_request WHERE ?=?"
-		cur = g.db.execute(query, (row, val,))
+		if row == 'ip':
+			query = "SELECT Count(*) FROM drip_request WHERE ip=?"
+		elif row == 'address':
+			query = "SELECT Count(*) FROM drip_request WHERE address=?"
+		cur = g.db.execute(query, (val,))
 		return int(cur.fetchone()[0])
 
 	def last_request(self, val):
