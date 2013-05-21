@@ -145,7 +145,7 @@ class DripRequest:
 		return int(cur.fetchone()[0])
 
 	def last_request(self, row, val):
-		query = "SELECT * FROM drip_request WHERE {0} = '{1}'"
+		query = "SELECT * FROM drip_request ORDER BY id DESC WHERE {0} = '{1}'"
 		cur = g.db.execute(query.format(row, val))
 		req_date = cur.fetchone()[1]
 		req_datetime = datetime.strptime(req_date, "%Y-%m-%d %H:%M:%S")
