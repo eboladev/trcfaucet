@@ -173,6 +173,7 @@ class DripRequest:
 			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
 			g.db.commit()
 		elif self.last_request("ip", self.ip) < 60:
+			print("test")
 			print(self.last_request("ip", self.ip))
 			raise IndexError
 		else:
