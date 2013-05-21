@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import string
 import sqlite3
 import hashlib
@@ -252,7 +253,7 @@ def add():
 		print("Duplicate IP or Address. Redirecting...")
 		return redirect(url_for('duplicate'))
 	except:
-		print("Unexplained failure.")
+		print(sys.exc_info()[0])
 		return redirect(url_for('bad'))
 
 @app.route('/good')
