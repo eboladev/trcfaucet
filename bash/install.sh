@@ -1,10 +1,9 @@
 apt-get update
 apt-get -y install build-essential libboost-all-dev libssl-dev libdb-dev libdb4.8++-dev libglib2.0-dev
 apt-get update
-apt-get -y install git apt-file python3 screen sqlite3 python-setuptools
+apt-get -y install git apt-file python3 screen sqlite3 python-setuptools python-flask
 apt-get update
 apt-file update
-easy_install Flask==dev
 
 git clone https://github.com/terracoin/terracoin.git
 cd ~/terracoin/src
