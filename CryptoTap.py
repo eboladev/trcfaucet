@@ -173,7 +173,7 @@ class DripRequest:
 			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
 			g.db.commit()
 		elif self.last_request("ip", self.ip) < 60:
-			raise 
+			raise IndexError
 		else:
 			raise LookupError
 
@@ -246,7 +246,7 @@ def add():
 	except ValueError:
 		print("Bad drip request. Redirecting...")
 		return redirect(url_for('bad'))
-	except LookupError:
+	except IndexError:
 		print("Duplicate IP or Address. Redirecting...")
 		return redirect(url_for('duplicate'))
 	except:
