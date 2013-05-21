@@ -169,7 +169,7 @@ class DripRequest:
 
 		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
 			self.save_db()
-		elif last_req >= 60:
+		elif (last_req == None) or (int(last_req) >= 60): # short circut 
 			self.save_db()
 		else: # last_req < 60
 			raise LookupError("Last request less than 60 mins ago.")
