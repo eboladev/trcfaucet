@@ -7,6 +7,7 @@ from CryptoTap import DripRequest
 
 # Globals ----------------------------------------------------------------------
 DATABASE_FILE = '/root/trc.db'
+DATABASE_TABLE = 'drip_request'
 COIN_CLIENT = 'terracoind'
 COIN_NAME = 'TRC'
 DEFAULT_SEND_VAL = 0.0001
@@ -17,9 +18,10 @@ LOW_BAL_LIMIT = 0.001
 # Send Function ----------------------------------------------------------------
 def get_balance():
 	"Retrieves the current balance."
-	return float(commands.getstatusoutput('{0} getbalance'.format(COIN_CLIENT))[1])
+	com = '{0} getbalance'
+	return float(commands.getstatusoutput(com.format(COIN_CLIENT))[1])
 
-def send(drip_id, address, coupon, amount, conn):
+def com_send(drip_id, address, coupon, amount, conn):
 		"""
 		Send the specified amount to the drip request, time whatever the
 		coupon code specifies. Uses the following unix command to do so:
@@ -28,22 +30,23 @@ def send(drip_id, address, coupon, amount, conn):
 
 		"""
 
-		# Make Shell Command
+		# Check coupon amount
 		amount *= Coupon().lookup(coupon)
-		 # hardcoded limit at 0.1 TRC in case the coupon system breaks
+
+		# Hardcoded limit at 0.1 TRC in case the coupon system breaks
 		if amount > HARD_LIMIT: amount = HARD_LIMIT
 		
+		# Make sure balance is not empty before sending
 		if (get_balance() - amount) > LOW_BAL_LIMIT:
 			# Construct Command
-			command = '{0} sendtoaddress {1} {2}'
-			command = command.format(COIN_CLIENT, address, str(amount))
+			command = "{0} sendtoaddress {1} {2}"
+			command = command.format(COIN_CLIENT, str(address), str(amount))
 			trans_id = commands.getstatusoutput(command)[1]
 
 			# Update
 			c = conn.cursor()
-			query = "update drip_request set trans_id = '{0}' where id = {1}"
-			query = query.format(trans_id, drip_id)
-			c.execute(query)
+			query = "update drip_request set trans_id = ? where id = ?"
+			c.execute(query, (trans_id, drip_id))
 			conn.commit()
 
 			# Console Message
@@ -60,8 +63,8 @@ def send_coins():
 	c = conn.cursor()
 
 	# Do Query
-	query = "SELECT * FROM drip_request WHERE trans_id='UNSENT' LIMIT 1"
-	c.execute(query.format("UNSENT"))
+	query = "SELECT * FROM ? WHERE trans_id=? LIMIT 1"
+	c.execute(query, (DATABASE_TABLE, "UNSENT"))
 
 	row = c.fetchone()
 	if row == None:
@@ -69,10 +72,11 @@ def send_coins():
 	else:
 		try:
 			drip = DripRequest(row[3], row[4], row[2], row[0])
-			return send( drip.drip_id, drip.address, drip.coupon, DEFAULT_SEND_VAL, conn)
-
-		except ValueError: return "Something Broke(ValueError)..." 
-		except:	return "Something Broke(SomeError)..."
+			return com_send( drip.drip_id, drip.address, drip.coupon,
+						 DEFAULT_SEND_VAL, conn)
+		except ValueError as detail: 
+			return "Something Broke: " + detail 
+		except:	return "Something Broke..."
 
 	# Close Database
 	conn.close()
@@ -82,5 +86,5 @@ def send_coins():
 while True:
 	print("Checking for drips...")
 	print(send_coins())
-	print("Sleeping for 5 seconds...")
-	sleep(5)
+	print("Sleeping for 15 seconds...")
+	sleep(15)

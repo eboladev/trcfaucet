@@ -19,14 +19,8 @@ from contextlib import closing
 
 # Global Configs ---------------------------------------------------------------
 DATABASE = '/root/trc.db'
-SECRET_KEY = '31491de80d74f54da681c40cc4d08c41a35939ac'
-USERNAME = 'trcadmin'
-PASSWORD = 'trcs3cur3'
-
+DATABASE_INIT = 'schema.sql'
 DATABASE_TABLE = 'drip_request'
-DEFAULT_SEND_VAL = 0.0001
-COIN_NAME = "TRC"
-COIN_CLIENT = "terracoind"
 REQUEST_LIMIT = 3
 
 
@@ -50,7 +44,7 @@ def teardown_request(exception):
 
 def init_db():
 	with closing(connect_db()) as db:
-		with app.open_resource('schema.sql') as f:
+		with app.open_resource(app.config['DATABASE_INIT']) as f:
 			db.cursor().executescript(f.read())
 		db.commit()
 
@@ -80,15 +74,17 @@ class DripRequest:
 
 	# Magics -------------------------------------------------------------------
 	def __init__(self, address, coupon, ip, drip_id = 0):
-		if not self.validate_address(str(address)): 
+		if not self.validate_address(address): 
 			raise ValueError("Invalid Terracoin Address.")
-		elif not self.validate_coupon(str(coupon)): coupon = "INVALID"
-		elif not self.validate_ip(str(ip)): raise ValueError("Invalid IP.")
+		elif not self.validate_coupon(coupon): 
+			coupon = "INVALID"
+		elif not self.validate_ip(ip): 
+			raise ValueError("Invalid IP.")
 
 		self.address = str(address)
 		self.coupon = str(coupon).upper()
 		self.ip = str(ip)
-		self.drip_id = drip_id
+		self.drip_id = int(drip_id)
 
 	def __str__(self):
 		text = '{0} {1} {2} {3} {4}'
@@ -98,7 +94,7 @@ class DripRequest:
 	def clean(self, in_str):
 		"""Strips out string that is not alphanumeric. Should stop injects."""
 		pattern = re.compile('[\W_]+')
-		return pattern.sub('', in_str)
+		return pattern.sub('', str(in_str))
 
 	def validate_address(self, address):
 		"""
@@ -137,48 +133,46 @@ class DripRequest:
 
 	def validate_ip(self, ip):
 		"""Checks if it is a valid IP address."""
-		return re.match('([0-9]{1,3}\.){3}[0-9]+',ip)	
+		return re.match('([0-9]{1,3}\.){3}[0-9]+', str(ip))	
 
 	# Database Methods ---------------------------------------------------------
 	def count_unique(self, row, val):
-		query = "SELECT Count(*) FROM drip_request WHERE {0} = '{1}'"
-		cur = g.db.execute(query.format(row, val))
+		query = "SELECT Count(*) FROM drip_request WHERE ? = ?"
+		cur = g.db.execute(query, (row, val))
 		return int(cur.fetchone()[0])
 
-	def last_request(self, row, val):
-		query = "SELECT * FROM drip_request WHERE {0} = '{1}' ORDER BY id DESC"
-		cur = g.db.execute(query.format(row, val))
+	def last_request(self, val):
+		query = "SELECT * FROM drip_request WHERE ip = ? ORDER BY id DESC"
+		cur = g.db.execute(query, (self.ip))
 		req_date = cur.fetchone()[1]
 		req_datetime = datetime.strptime(req_date, "%Y-%m-%d %H:%M:%S")
 		diff_time = datetime.now() - req_datetime
 		diff_time = divmod(diff_time.seconds, 60)
-		return int(diff_time[0])
+		return int(diff_time[0]) # minutes sence last request
+
+	def save_db(self):
+		query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
+		query += "VALUES (NULL, datetime('now'), ?, ?, ?, ?)"
+		g.db.execute(query, (self.ip, self.address, self.coupon, "UNSENT"))
+		g.db.commit()
 
 	def save(self):
 		"""Insert drip request into database."""
 		num_ip = self.count_unique("ip", self.ip)
 		num_address = self.count_unique("address", self.address)
-		request_str = "IP: {0}/{1} and Address: {2}/{3}"
+		last_req = self.last_request(self.ip)
+
+		request_str = "IP: {0}/{1} and Address: {2}/{3}. Last Req: {4} mins"
 		request_str = request_str.format(num_ip, REQUEST_LIMIT, num_address,
-										 REQUEST_LIMIT)
+										 REQUEST_LIMIT, last_req)
 		print(request_str)
 
 		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
-			query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
-			query += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
-			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
-			g.db.commit()
-		elif self.last_request("ip", self.ip) >= 60:
-			query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
-			query += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
-			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
-			g.db.commit()
-		elif self.last_request("ip", self.ip) < 60:
-			print("test")
-			print(self.last_request("ip", self.ip))
-			raise IndexError
-		else:
-			raise LookupError
+			self.save_db()
+		elif last_req >= 60:
+			self.save_db()
+		else: # last_req < 60
+			raise LookupError("Last request less than 60 mins ago.")
 
 	def send(self):
 		return(self.address, self.coupon)
@@ -246,11 +240,11 @@ def add():
 		DripRequest(request.form['address'], request.form['coupon'], ip).save()
 		print("Good drip request. Saving to database...")
 		return redirect(url_for('good'))
-	except ValueError:
-		print("Bad drip request. Redirecting...")
+	except ValueError as detail:
+		print("Bad: " + detail)
 		return redirect(url_for('bad'))
-	except IndexError:
-		print("Duplicate IP or Address. Redirecting...")
+	except LookupError as datail:
+		print("Duplicate: " + detail)
 		return redirect(url_for('duplicate'))
 	except:
 		print(sys.exc_info()[0])
