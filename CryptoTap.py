@@ -144,6 +144,15 @@ class DripRequest:
 		cur = g.db.execute(query.format(row, val))
 		return int(cur.fetchone()[0])
 
+	def last_request(self, row, val):
+		query = "SELECT Count(*) FROM drip_request WHERE {0} = '{1}'"
+		cur = g.db.execute(query.format(row, val))
+		req_date = int(cur.fetchone()[1])
+		req_datetime = datetime.strptimereq_date, "%Y-%m-%d %H:%M:%S")
+		diff_time = datetime.now() - req_datetime
+		diff_time = divmod(diff_time.seconds, 60)
+		return int(diff_time[0])
+
 	def save(self):
 		"""Insert drip request into database."""
 		num_ip = self.count_unique("ip", self.ip)
@@ -158,8 +167,15 @@ class DripRequest:
 			query += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
 			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
 			g.db.commit()
+		elif self.last_request("ip", self.ip) >= 60:
+			query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
+			query += "VALUES (NULL, datetime('now'),'{0}','{1}','{2}','{3}')"
+			g.db.execute(query.format(self.ip, self.address, self.coupon, "UNSENT"))
+			g.db.commit()
+		elif self.last_request("ip", self.ip) < 60:
+			raise 
 		else:
-			raise LookupErrors
+			raise LookupError
 
 	def send(self):
 		return(self.address, self.coupon)
