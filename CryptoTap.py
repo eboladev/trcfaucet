@@ -144,11 +144,14 @@ class DripRequest:
 	def last_request(self, val):
 		query = "SELECT * FROM drip_request WHERE ip=? ORDER BY id DESC"
 		cur = g.db.execute(query, (self.ip,))
-		req_date = cur.fetchone()[1]
-		req_datetime = datetime.strptime(req_date, "%Y-%m-%d %H:%M:%S")
-		diff_time = datetime.now() - req_datetime
-		diff_time = divmod(diff_time.seconds, 60)
-		return int(diff_time[0]) # minutes sence last request
+		req_date = cur.fetchone()
+		if req_date == None:
+			return 0
+		else:
+			req_datetime = datetime.strptime(req_date[1], "%Y-%m-%d %H:%M:%S")
+			diff_time = datetime.now() - req_datetime
+			diff_time = divmod(diff_time.seconds, 60)
+			return int(diff_time[0]) # minutes sence last request
 
 	def save_db(self):
 		query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
@@ -169,7 +172,7 @@ class DripRequest:
 
 		if num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
 			self.save_db()
-		elif (last_req == None) or (int(last_req) >= 60): # short circut 
+		elif last_req >= 60:
 			self.save_db()
 		else: # last_req < 60
 			raise LookupError("Last request less than 60 mins ago.")
@@ -240,15 +243,15 @@ def add():
 		DripRequest(request.form['address'], request.form['coupon'], ip).save()
 		print("Good drip request. Saving to database...")
 		return redirect(url_for('good'))
-	# except ValueError as detail:
-	# 	print("Bad: " + detail)
-	# 	return redirect(url_for('bad'))
+	except ValueError as detail:
+		print("Bad: " + detail)
+		return redirect(url_for('bad'))
 	except LookupError as detail:
 		print("Duplicate: " + detail)
 		return redirect(url_for('duplicate'))
-	# except:
-	# 	print(sys.exc_info()[0])
-	# 	return redirect(url_for('bad'))
+	except:
+		print(sys.exc_info()[0])
+		return redirect(url_for('bad'))
 
 @app.route('/good')
 def good(): return get_index("good")
