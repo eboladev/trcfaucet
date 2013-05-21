@@ -244,10 +244,10 @@ def add():
 		print("Good drip request. Saving to database...")
 		return redirect(url_for('good'))
 	except ValueError as detail:
-		print("Bad: " + detail)
+		print("Bad: " + str(detail))
 		return redirect(url_for('bad'))
 	except LookupError as detail:
-		print("Duplicate: " + detail)
+		print("Duplicate: " + str(detail))
 		return redirect(url_for('duplicate'))
 	except:
 		print(sys.exc_info()[0])

@@ -75,7 +75,7 @@ def send_coins():
 			return com_send( drip.drip_id, drip.address, drip.coupon,
 						 DEFAULT_SEND_VAL, conn)
 		except ValueError as detail: 
-			return "Something Broke: " + detail 
+			return "Something Broke: " + str(detail) 
 		except:	return "Something Broke..."
 
 	# Close Database
