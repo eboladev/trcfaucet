@@ -240,15 +240,15 @@ def add():
 		DripRequest(request.form['address'], request.form['coupon'], ip).save()
 		print("Good drip request. Saving to database...")
 		return redirect(url_for('good'))
-	except ValueError as detail:
-		print("Bad: " + detail)
-		return redirect(url_for('bad'))
-	except LookupError as datail:
+	# except ValueError as detail:
+	# 	print("Bad: " + detail)
+	# 	return redirect(url_for('bad'))
+	except LookupError as detail:
 		print("Duplicate: " + detail)
 		return redirect(url_for('duplicate'))
-	except:
-		print(sys.exc_info()[0])
-		return redirect(url_for('bad'))
+	# except:
+	# 	print(sys.exc_info()[0])
+	# 	return redirect(url_for('bad'))
 
 @app.route('/good')
 def good(): return get_index("good")
