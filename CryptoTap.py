@@ -147,7 +147,7 @@ class DripRequest:
 	def last_request(self, row, val):
 		query = "SELECT Count(*) FROM drip_request WHERE {0} = '{1}'"
 		cur = g.db.execute(query.format(row, val))
-		req_date = int(cur.fetchone()[1])
+		req_date = cur.fetchone()[1]
 		req_datetime = datetime.strptime(req_date, "%Y-%m-%d %H:%M:%S")
 		diff_time = datetime.now() - req_datetime
 		diff_time = divmod(diff_time.seconds, 60)
