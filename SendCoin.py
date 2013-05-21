@@ -45,7 +45,7 @@ def com_send(drip_id, address, coupon, amount, conn):
 
 			# Update
 			c = conn.cursor()
-			query = "update drip_request set trans_id = ? where id = ?"
+			query = "update drip_request set trans_id=? where id=?"
 			c.execute(query, (trans_id, drip_id))
 			conn.commit()
 
@@ -63,8 +63,8 @@ def send_coins():
 	c = conn.cursor()
 
 	# Do Query
-	query = "SELECT * FROM ? WHERE trans_id=? LIMIT 1"
-	c.execute(query, (DATABASE_TABLE, "UNSENT"))
+	query = "select * from drip_request where trans_id=? limit 1"
+	c.execute(query, ("UNSENT"))
 
 	row = c.fetchone()
 	if row == None:
