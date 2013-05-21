@@ -137,13 +137,13 @@ class DripRequest:
 
 	# Database Methods ---------------------------------------------------------
 	def count_unique(self, row, val):
-		query = "SELECT Count(*) FROM drip_request WHERE ? = ?"
-		cur = g.db.execute(query, (row, val))
+		query = "SELECT Count(*) FROM drip_request WHERE ?=?"
+		cur = g.db.execute(query, (row, val,))
 		return int(cur.fetchone()[0])
 
 	def last_request(self, val):
-		query = "SELECT * FROM drip_request WHERE ip = ? ORDER BY id DESC"
-		cur = g.db.execute(query, (self.ip))
+		query = "SELECT * FROM drip_request WHERE ip=? ORDER BY id DESC"
+		cur = g.db.execute(query, (self.ip,))
 		req_date = cur.fetchone()[1]
 		req_datetime = datetime.strptime(req_date, "%Y-%m-%d %H:%M:%S")
 		diff_time = datetime.now() - req_datetime
@@ -153,7 +153,7 @@ class DripRequest:
 	def save_db(self):
 		query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
 		query += "VALUES (NULL, datetime('now'), ?, ?, ?, ?)"
-		g.db.execute(query, (self.ip, self.address, self.coupon, "UNSENT"))
+		g.db.execute(query, (self.ip, self.address, self.coupon, "UNSENT",))
 		g.db.commit()
 
 	def save(self):
