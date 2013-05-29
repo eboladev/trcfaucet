@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import random
 import string
 import sqlite3
 import hashlib
@@ -49,14 +50,74 @@ def init_db():
 		db.commit()
 
 
+# Affiliate System -------------------------------------------------------------
+class Affiliate:
+	class __init__(self):
+		pass
+
+
+# API System -------------------------------------------------------------------
+class API:
+	class __init__(self):
+		pass
+
+
 # Coupon System  ---------------------------------------------------------------
 class Coupon:
 	def __init__(self):
+		"""
+		Validates coupons. Also allows the admin to create new coupons of the 
+		following types:
+
+		SINGLE_USE - Only redeems once for a set value.
+		CAP_USE - Only a set number of coupons can be redeemed.
+
+		"""
 		pass
+
+	def new(self, coup_type, coup_value, max_use = 1):
+		query = "INSERT INTO coupon_list (id, coup_type, coup_value, max_use, access_key)"
+		query += "VALUES (NULL, ?, ?, ?, ?)"
+
+		if coupon_type == 'SINGLE_USE' or coupon_type == 'CAP_USE':
+			pass
+		else:
+			return "Unrecognized coupon type."
+
+		access_key = gen_access_key()
+
+		g.db.execute(query, (coup_type, coup_value, max_use, access_key,))
+		g.db.commit()
+
+		return access_key
+
+	def gen_access_key(self):
+		return str(hashlib.sha1(str(random.random())).hexdigest())[:10]
+
+	def search(self, access_key):
+		query = "select * from coupon_list where access_key=? limit 1"
+		cur = g.db.execute(query, (access_key,))
+		return cur.fetchone()
+
+	def use(self, access_key):
+		coupon = self.search(access_key)
+		coup_id = coupon[0]
+		coup_val = coupon[2]
+		max_use = coupon[3]
+
+		if max_use >= 1:
+			query = "update coupon_list set max_use=(max_use - 1) where id=?"
+			g.db.execute(query, (coup_id,))
+			g.db.commit()
+			return coup_val
+
+		return 0
+		
 	def lookup(self, coupon):
-		if coupon == "MOREMONEY": return 1.5
-		elif coupon == "DOUBLEMONEY": return 2
-		return 1 
+		"""Returns the spend value for a particular coupon."""
+		if coupon == "MOREMONEY": return 0.00015
+		elif coupon == "DOUBLEMONEY": return 0.0002
+		return 0.0001
 
 
 # Classes ----------------------------------------------------------------------
@@ -127,9 +188,7 @@ class DripRequest:
 	def validate_coupon(self, coupon):
 		"""Makes sure the coupon is alphanumeric and less than 12 chars."""
 		coupon = self.clean(coupon)
-		cond1 = re.match('^[\w]+$', coupon) and len(coupon)<12
-		cond2 = (Coupon().lookup(coupon) != 1)
-		return (cond1 and cond2)
+		return re.match('^[\w]+$', coupon) and len(coupon)<12
 
 	def validate_ip(self, ip):
 		"""Checks if it is a valid IP address."""

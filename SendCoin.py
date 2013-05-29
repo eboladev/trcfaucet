@@ -31,7 +31,11 @@ def com_send(drip_id, address, coupon, amount, conn):
 		"""
 
 		# Check coupon amount
-		amount *= Coupon().lookup(coupon)
+		coupon_val = float(Coupon().use(coupon))
+		if coupon_val >= 0:
+			amount = coupon_val
+		else:
+			amount = DEFAULT_SEND_VAL
 
 		# Hardcoded limit at 0.1 TRC in case the coupon system breaks
 		if amount > HARD_LIMIT: amount = HARD_LIMIT
