@@ -54,6 +54,9 @@ class Coupon:
 
 	def use(self, access_key):
 		coupon = self.search(access_key)
+		print(coupon)
+		if coupon == None: return 0
+
 		coup_id = coupon[0]
 		coup_val = coupon[2]
 		max_use = coupon[3]
@@ -90,7 +93,7 @@ def com_send(drip_id, address, coupon, amount, conn):
 
 		# Check coupon amount
 		coupon_val = float(Coupon(conn).use(coupon))
-		if coupon_val >= 0:
+		if coupon_val > 0:
 			amount = coupon_val
 		else:
 			amount = DEFAULT_SEND_VAL
@@ -138,7 +141,7 @@ def send_coins():
 						 DEFAULT_SEND_VAL, conn)
 		except ValueError as detail: 
 			return "Something Broke: " + str(detail) 
-		except:	return "Something Broke..."
+		#except:	return "Something Broke..."
 
 	# Close Database
 	conn.close()
