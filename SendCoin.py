@@ -1,7 +1,6 @@
 import sqlite3
 import commands
 from time import sleep
-from CryptoTap import Coupon
 from CryptoTap import DripRequest
 
 
