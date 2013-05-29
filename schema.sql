@@ -21,4 +21,4 @@ create table coupon_list (
 	access_key string not null
 );
 insert into coupon_list (id, coup_type, coup_value, max_use, access_key) 
-values (null, 'SINGLE_USE', 0.001, 1, '31491de80d');
+values (null, 'SINGLE_USE', 0.001, 25, '31491de80d');
