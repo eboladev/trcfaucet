@@ -15,7 +15,66 @@ HARD_LIMIT = 0.01
 LOW_BAL_LIMIT = 0.001
 
 
-# Send Function ----------------------------------------------------------------
+# Coupon System  ---------------------------------------------------------------
+class Coupon:
+	def __init__(self,conn):
+		"""
+		Validates coupons. Also allows the admin to create new coupons of the 
+		following types:
+
+		SINGLE_USE - Only redeems once for a set value.
+		CAP_USE - Only a set number of coupons can be redeemed.
+
+		"""
+		self.conn = conn
+		self.cursor = conn.cursor()
+
+	def new(self, coup_type, coup_value, max_use = 1):
+		query = "INSERT INTO coupon_list (id, coup_type, coup_value, max_use, access_key)"
+		query += "VALUES (NULL, ?, ?, ?, ?)"
+
+		if coupon_type == 'SINGLE_USE' or coupon_type == 'CAP_USE':
+			pass
+		else:
+			return "Unrecognized coupon type."
+
+		access_key = gen_access_key()
+
+		self.cursor.execute(query, (coup_type, coup_value, max_use, access_key,))
+		self.conn.commit()
+
+		return access_key
+
+	def gen_access_key(self):
+		return str(hashlib.sha1(str(random.random())).hexdigest())[:10]
+
+	def search(self, access_key):
+		query = "select * from coupon_list where access_key=? limit 1"
+		self.cursor.execute(query, (access_key,))
+		return self.cursor.fetchone()
+
+	def use(self, access_key):
+		coupon = self.search(access_key)
+		coup_id = coupon[0]
+		coup_val = coupon[2]
+		max_use = coupon[3]
+
+		if max_use >= 1:
+			query = "update coupon_list set max_use=(max_use - 1) where id=?"
+			self.cursor.execute(query, (coup_id,))
+			self.conn.commit()
+			return coup_val
+
+		return 0
+		
+	def lookup(self, coupon):
+		"""Returns the spend value for a particular coupon."""
+		if coupon == "MOREMONEY": return 0.00015
+		elif coupon == "DOUBLEMONEY": return 0.0002
+		return 0.0001
+
+
+# Send Functions ---------------------------------------------------------------
 def get_balance():
 	"Retrieves the current balance."
 	com = '{0} getbalance'
@@ -31,7 +90,7 @@ def com_send(drip_id, address, coupon, amount, conn):
 		"""
 
 		# Check coupon amount
-		coupon_val = float(Coupon().use(coupon))
+		coupon_val = float(Coupon(conn).use(coupon))
 		if coupon_val >= 0:
 			amount = coupon_val
 		else:
