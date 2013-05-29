@@ -48,6 +48,7 @@ class Coupon:
 		return str(hashlib.sha1(str(random.random())).hexdigest())[:10]
 
 	def search(self, access_key):
+		print(access_key)
 		query = "select * from coupon_list where access_key=? limit 1"
 		self.cursor.execute(query, (access_key,))
 		return self.cursor.fetchone()
