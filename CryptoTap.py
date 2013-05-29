@@ -52,13 +52,13 @@ def init_db():
 
 # Affiliate System -------------------------------------------------------------
 class Affiliate:
-	class __init__(self):
+	def __init__(self):
 		pass
 
 
 # API System -------------------------------------------------------------------
 class API:
-	class __init__(self):
+	def __init__(self):
 		pass
 
 
