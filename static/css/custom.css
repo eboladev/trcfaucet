@@ -2,15 +2,18 @@
 	height: 75px; 
 	text-align: center;
 	border-bottom: 1px #DDDDDD solid;
-	background-image: url('../img/globe.png');
-	background-repeat: no-repeat;
 	margin-bottom: 15px;
-	background-position:20px 0px;
 	background: #5DA423;
 	height: 100px;
 	margin-top: -10px;
 }
-.header h2 { color: white; }
+.header h2 { 
+	color: white;
+	padding-top: 25px;
+	background-image: url('../img/globe.png');
+	background-repeat: no-repeat;
+	background-position:20px 0px;
+}
 .give {
 	width:100%; 
 	margin-bottom: 0px;
