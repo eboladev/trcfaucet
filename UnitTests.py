@@ -3,6 +3,9 @@ from SendCoin import Coupon
 from CryptoTap import Affliate
 from CryptoTap import DripRequest
 
+# Test Objects
+drip = DripRequest()
+
 # Sample Addresses
 assert(drip.validate_address("1aueAUEZMN9875bjnsYXYX52366ZMWJJ"))
 assert(not drip.validate_address("1aueAUEZMN9875bjnsYXYX52366ZMWJJO"))

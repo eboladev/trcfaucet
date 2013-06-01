@@ -1,13 +1,9 @@
-import os
 import re
 import sys
-import random
-import string
 import sqlite3
 import hashlib
 from random import randrange
 from datetime import datetime
-from datetime import timedelta
 
 from flask import g
 from flask import Flask
@@ -25,7 +21,7 @@ DATABASE_TABLE = 'drip_request'
 REQUEST_LIMIT = 3
 REQUEST_TIME_LIMIT = 60 # minutes
 COIN_NAME = 'TRC'
-
+BLOCK_EXPLORER_URL = 'http://cryptocoinexplorer.com:3750/tx/'
 
 # Load Flask -------------------------------------------------------------------
 app = Flask(__name__)
@@ -216,19 +212,19 @@ def get_html(save_time, ip, trans_id):
 	diff_time = datetime.now()-datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
 	diff_time = divmod(diff_time.seconds, 60)
 	diff_time = "{0} mins, {1} secs ago".format(diff_time[0], diff_time[1])
-	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 655)))
+	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 756)))
 
 	if trans_id == "UNSENT":
 		html = "<tr><td>{0}</td><td>{1}</td><td>Processing...</td></tr>"
 		return html.format(diff_time, obfuscated_ip)
 	else:
 		short_trans_id = trans_id[:37] + "..."
-		trans_url = "http://cryptocoinexplorer.com:3750/tx/{0}".format(trans_id)
+		trans_url = app.config['BLOCK_EXPLORER_URL'] + trans_id
 		html = "<tr><td>{0}</td><td>{1}</td><td><a href='{2}'>{3}</a></td></tr>"
 		return html.format(diff_time, obfuscated_ip, trans_url, short_trans_id)
 		
 def get_index(form_submit_status = None):
-	"""Displays the default index page, or a success/error page."""
+	"""Displays the default index page, or a success / error page."""
 	captcha = (randrange(1, 15), randrange(1, 15))
 	captcha_awns = hashlib.sha1(str(captcha[0] + captcha[1])).hexdigest()
 
