@@ -1,7 +1,3 @@
-body {
-	font-family: HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
-}
-
 .header {
 	height: 75px; 
 	text-align: center;
@@ -14,9 +10,6 @@ body {
 .header h2 { 
 	color: white;
 	padding-top: 25px;
-	background-image: url('../img/globe.png');
-	background-repeat: no-repeat;
-	background-position:20px 0px;
 }
 .give {
 	width:100%; 
