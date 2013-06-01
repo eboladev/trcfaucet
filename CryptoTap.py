@@ -23,6 +23,8 @@ DATABASE = '/root/trc.db'
 DATABASE_INIT = 'schema.sql'
 DATABASE_TABLE = 'drip_request'
 REQUEST_LIMIT = 3
+REQUEST_TIME_LIMIT = 60 # minutes
+COIN_NAME = 'TRC'
 
 
 # Load Flask -------------------------------------------------------------------
@@ -77,31 +79,35 @@ class DripRequest:
 
 	# Magics -------------------------------------------------------------------
 	def __init__(self, address, coupon, ip, drip_id = 0):
-		if not self.validate_address(address): 
-			raise ValueError("Invalid Terracoin Address.")
+		# Validate all input
+		if not self.validate_address(address):
+			errmsg = 'Invalid {0} Address'.format(app.config['COIN_NAME']) 
+			raise ValueError(errmsg)
 		elif not self.validate_coupon(coupon): 
-			coupon = "INVALID"
+			coupon = 'INVALID'
 		elif not self.validate_ip(ip): 
-			raise ValueError("Invalid IP.")
+			raise ValueError('Invalid IP')
 
+		# Cast everything
 		self.address = str(address)
 		self.coupon = str(coupon).upper()
 		self.ip = str(ip)
 		self.drip_id = int(drip_id)
 
 	def __str__(self):
+		"""Object to string for easy debugging."""
 		text = '{0} {1} {2} {3} {4}'
 		return text.format(self.address, self.coupon, self.ip, self.drip_id)
 
 	# Validation and Clean Functions -------------------------------------------
 	def clean(self, in_str):
-		"""Strips out string that is not alphanumeric. Should stop injects."""
+		"""Strips out chars that are not alphanumeric."""
 		pattern = re.compile('[\W_]+')
 		return pattern.sub('', str(in_str))
 
 	def validate_address(self, address):
 		"""
-		Does simple validation of a bitcoin address. 
+		Does simple validation of a bitcoin-like address. 
 		Source: http://bit.ly/17OhFP5
 
 		param : address : an ASCII or unicode string, of a bitcoin address.
@@ -133,11 +139,12 @@ class DripRequest:
 		return re.match('^[\w]+$', coupon) and len(coupon)<12
 
 	def validate_ip(self, ip):
-		"""Checks if it is a valid IP address."""
+		"""Checks for a valid IP address."""
 		return re.match('([0-9]{1,3}\.){3}[0-9]+', str(ip))	
 
 	# Database Methods ---------------------------------------------------------
 	def count_unique(self, row, val):
+		"""Count the number of unique row for a particular value."""
 		if row == 'ip':
 			query = "SELECT Count(*) FROM drip_request WHERE ip=?"
 		elif row == 'address':
@@ -146,6 +153,7 @@ class DripRequest:
 		return int(cur.fetchone()[0])
 
 	def last_request(self, val):
+		"""Return the number of minutes since the last drip request."""
 		query = "SELECT * FROM drip_request WHERE ip=? ORDER BY id DESC"
 		cur = g.db.execute(query, (self.ip,))
 		req_date = cur.fetchone()
@@ -155,16 +163,18 @@ class DripRequest:
 			req_datetime = datetime.strptime(req_date[1], "%Y-%m-%d %H:%M:%S")
 			diff_time = datetime.now() - req_datetime
 			diff_time = divmod(diff_time.seconds, 60)
-			return int(diff_time[0]) # minutes sence last request
+			return int(diff_time[0]) # minutes since last request
 
 	def save_db(self):
-		query = "INSERT INTO drip_request (id, crdate, ip, address, coupon, trans_id)"
+		"""Insert object data into database."""
+		query = "INSERT INTO drip_request"
+		query += "(id, crdate, ip, address, coupon, trans_id)"
 		query += "VALUES (NULL, datetime('now'), ?, ?, ?, ?)"
 		g.db.execute(query, (self.ip, self.address, self.coupon, "UNSENT",))
 		g.db.commit()
 
 	def save(self):
-		"""Insert drip request into database."""
+		"""Save drip request into database."""
 		num_ip = self.count_unique("ip", self.ip)
 		num_address = self.count_unique("address", self.address)
 		last_req = self.last_request(self.ip)
@@ -178,7 +188,7 @@ class DripRequest:
 			self.save_db()
 		elif num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
 			self.save_db()
-		elif last_req >= 60:
+		elif last_req >= app.config['REQUEST_TIME_LIMIT']:
 			self.save_db()
 		else: # last_req < 60
 			raise LookupError("Last request less than 60 mins ago.")

@@ -37,7 +37,7 @@ class Coupon:
 		else:
 			return "Unrecognized coupon type."
 
-		access_key = gen_access_key()
+		access_key = str(gen_access_key()).lower()
 
 		self.cursor.execute(query, (coup_type, coup_value, max_use, access_key,))
 		self.conn.commit()
@@ -50,12 +50,11 @@ class Coupon:
 	def search(self, access_key):
 		print(access_key)
 		query = "select * from coupon_list where access_key=? limit 1"
-		self.cursor.execute(query, (access_key,))
+		self.cursor.execute(query, (access_key.lower(),))
 		return self.cursor.fetchone()
 
 	def use(self, access_key):
 		coupon = self.search(access_key)
-		print(coupon)
 		if coupon == None: return 0
 
 		coup_id = coupon[0]
@@ -70,12 +69,6 @@ class Coupon:
 
 		return 0
 		
-	def lookup(self, coupon):
-		"""Returns the spend value for a particular coupon."""
-		if coupon == "MOREMONEY": return 0.00015
-		elif coupon == "DOUBLEMONEY": return 0.0002
-		return 0.0001
-
 
 # Send Functions ---------------------------------------------------------------
 def get_balance():
