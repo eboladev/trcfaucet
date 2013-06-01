@@ -7,8 +7,10 @@
 	margin-bottom: 15px;
 	background-position:20px 0px;
 	background: #5DA423;
-	color: white;
+	height: 100px;
+	margin-top: -10px;
 }
+.header h2 { color: white; }
 .give {
 	width:100%; 
 	margin-bottom: 0px;
