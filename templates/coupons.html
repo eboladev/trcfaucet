@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+	<h3>Coupons</h3>
+
+	<div class="row">
+		<div class="large-12 columns">
+			<table>
+				<thead>
+					<tr>
+						<th class="time">Access Key</th>
+						<th class="ip">Coupon Value</th>
+						<th class="transid">Max Use</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{coupons|safe}}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+{% endblock %}

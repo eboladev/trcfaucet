@@ -240,6 +240,16 @@ def get_index(form_submit_status = None):
 						   form_submit=form_submit_status, captcha=captcha,
 						   captcha_awns=captcha_awns, stats=stats)
 
+def get_coupons_html(access_key, coup_value, max_use):
+	html = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>"
+	return html.format(access_key, coup_value, max_use)
+
+def get_coupons():
+	query = 'SELECT * FROM coupon_list'
+	recent = g.db.execute(query)
+	recent = [get_html(row[4], row[2], row[3]) for row in recent.fetchall()]
+	recent = ''.join(map(str, recent))
+	return render_template('coupon.html', coupons=coupons)
 
 # Routes -----------------------------------------------------------------------
 @app.route('/')
@@ -278,6 +288,8 @@ def forum(): return render_template('forum.html')
 def resources(): return render_template('resources.html')
 @app.route('/guide')
 def guide(): return render_template('guide.html')
+@app.route('/coupon123')
+def coupon123(): return get_coupons()
 
 
 # Main -------------------------------------------------------------------------
