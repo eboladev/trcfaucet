@@ -246,9 +246,9 @@ def get_coupons_html(access_key, coup_value, max_use):
 
 def get_coupons():
 	query = 'SELECT * FROM coupon_list'
-	recent = g.db.execute(query)
-	recent = [get_html(row[4], row[2], row[3]) for row in recent.fetchall()]
-	recent = ''.join(map(str, recent))
+	coupons = g.db.execute(query)
+	coupons = [get_html(row[4], row[2], row[3]) for row in recent.fetchall()]
+	coupons = ''.join(map(str, recent))
 	return render_template('coupon.html', coupons=coupons)
 
 # Routes -----------------------------------------------------------------------
