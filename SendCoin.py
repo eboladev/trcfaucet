@@ -26,13 +26,13 @@ class Coupon:
 
 		"""
 		self.conn = sqlite3.connect(DATABASE_FILE)
-		self.cursor = conn.cursor()
+		self.cursor = self.conn.cursor()
 
 	def new(self, coup_type, coup_value, max_use = 1):
 		query = "INSERT INTO coupon_list (id, coup_type, coup_value, max_use, access_key)"
 		query += "VALUES (NULL, ?, ?, ?, ?)"
 
-		if coupon_type == 'SINGLE_USE' or coupon_type == 'CAP_USE':
+		if coup_type == 'SINGLE_USE' or coup_type == 'CAP_USE':
 			pass
 		else:
 			return "Unrecognized coupon type."
