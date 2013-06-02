@@ -248,8 +248,8 @@ def get_coupons():
 	query = 'SELECT * FROM coupon_list'
 	coupons = g.db.execute(query)
 	coupons = [get_coupons_html(row[4], row[2], row[3]) for row in coupons.fetchall()]
-	coupons = ''.join(map(str, recent))
-	return render_template('coupon.html', coupons=coupons)
+	coupons = ''.join(map(str, coupons))
+	return render_template('coupons.html', coupons=coupons)
 
 # Routes -----------------------------------------------------------------------
 @app.route('/')
