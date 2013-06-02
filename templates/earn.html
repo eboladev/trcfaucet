@@ -1,0 +1,22 @@
+<title>Test</title>
+<body>
+    <span>Earned:</span>
+    <span id="timer">test</span> - <span>Auto Payout to <b>12Ai7QavwJbLcPL5XS276fkYZpXPXTPFC7</b> after 0.001</span>
+    <iframe id="rotator"  style="height: 500px; width: 100%" src="http://trcfaucet.com"></iframe>
+</body>
+
+(function() {
+    var timer = document.getElementById('timer'),
+      x = new Big("0"),
+      y = new Big("0.00000001");
+    
+    function q() {
+        x = x.plus(y);
+        timer.innerHTML = x.plus(y) + " TRC";
+        setTimeout(q, 1000);
+    }
+    
+    q();
+}());
+
+http://jsfiddle.net/tNC6Y/6/
