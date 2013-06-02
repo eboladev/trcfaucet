@@ -16,7 +16,7 @@ LOW_BAL_LIMIT = 0.001
 
 # Coupon System  ---------------------------------------------------------------
 class Coupon:
-	def __init__(self,conn):
+	def __init__(self):
 		"""
 		Validates coupons. Also allows the admin to create new coupons of the 
 		following types:
@@ -25,7 +25,7 @@ class Coupon:
 		CAP_USE - Only a set number of coupons can be redeemed.
 
 		"""
-		self.conn = conn
+		self.conn = sqlite3.connect(DATABASE_FILE)
 		self.cursor = conn.cursor()
 
 	def new(self, coup_type, coup_value, max_use = 1):
@@ -140,8 +140,9 @@ def send_coins():
 
 
 # Infinite Loop ----------------------------------------------------------------
-while True:
-	print("Checking for drips...")
-	print(send_coins())
-	print("Sleeping for 15 seconds...")
-	sleep(15)
+if __name__ == '__main__':
+	while True:
+		print("Checking for drips...")
+		print(send_coins())
+		print("Sleeping for 15 seconds...")
+		sleep(15)
