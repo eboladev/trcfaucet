@@ -20,6 +20,6 @@ create table coupon_list (
 	access_key string not null
 );
 insert into coupon_list (id, coup_type, coup_value, max_use, access_key) 
-values (null, 'MULTI_USE', 0.00015, 1000, 'MOREMONEY');
+values (null, 'MULTI_USE', 0.00015, 1000, 'moremoney');
 insert into coupon_list (id, coup_type, coup_value, max_use, access_key) 
-values (null, 'MULTI_USE', 0.0002, 1000, 'DOUBLEMONEY');
+values (null, 'MULTI_USE', 0.0002, 1000, 'doublemoney');
