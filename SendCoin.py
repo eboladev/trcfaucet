@@ -1,5 +1,7 @@
 import sqlite3
 import commands
+import hashlib
+import random
 from time import sleep
 from CryptoTap import DripRequest
 
@@ -16,7 +18,7 @@ LOW_BAL_LIMIT = 0.001
 
 # Coupon System  ---------------------------------------------------------------
 class Coupon:
-	def __init__(self):
+	def __init__(self, conn):
 		"""
 		Validates coupons. Also allows the admin to create new coupons of the 
 		following types:
@@ -25,7 +27,7 @@ class Coupon:
 		CAP_USE - Only a set number of coupons can be redeemed.
 
 		"""
-		self.conn = sqlite3.connect(DATABASE_FILE)
+		self.conn = conn
 		self.cursor = self.conn.cursor()
 
 	def new(self, coup_type, coup_value, max_use = 1):
@@ -37,7 +39,7 @@ class Coupon:
 		else:
 			return "Unrecognized coupon type."
 
-		access_key = str(gen_access_key()).lower()
+		access_key = str(self.gen_access_key()).lower()
 
 		self.cursor.execute(query, (coup_type, coup_value, max_use, access_key,))
 		self.conn.commit()
