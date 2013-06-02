@@ -6,15 +6,13 @@
 	background: #5DA423;
 	height: 100px;
 	margin-top: -10px;
+	background-image: url('../img/globe.png');
+	background-repeat: no-repeat;
+	background-position:299px 0px;
 }
 .header h2 { 
 	color: white;
 	padding-top: 25px;
-}
-.logo {
-	background-image: url('../img/globe.png');
-	background-repeat: no-repeat;
-	background-position:0px 0px;
 }
 .give {
 	width:100%; 
