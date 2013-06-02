@@ -18,6 +18,9 @@
 	width:100%; 
 	margin-bottom: 0px;
 }
+.pkeep {
+	min-width: 500px;
+}
 .shift { padding-left:20px; }
 .center { text-align: center; }
 .donations { font-size:small; }

@@ -25,6 +25,15 @@
 		<a href="http://bitcoin.org">Bitcoin</a>. It operates on a peer to peer	network, the same
 		technology behind <a href="http://www.skype.com/">Skype</a> and <a href="http://www.bittorrent.com/">BitTorrent</a>. Futhermore, Terracoin is completely decentralized, meaning it is not controlled by 
 		any government or central bank.
+
+		<p class="pkeep">
+			<a href="https://sourceforge.net/projects/terracoin/files/latest/download" class="success button give" style="width:10%;">1</a>
+			<a href="https://sourceforge.net/projects/terracoin/files/latest/download" style="width:89%;" class="success button give">Download a Terracoin Wallet (Windows)</a>
+		</p>
+		<p class="pkeep">
+			<a href="/guide" class="success button give" style="width:10%;">2</a>
+			<a href="/guide" style="width:89%;" class="success button give">Read the Beginners Guide</a>
+		</p>
 	 </p>
 
 	<h3>Get Free Terracoins</h3>
@@ -34,7 +43,7 @@
 		(then 1 time per hour), and use coupons to get higher payouts. 
 	</p>
 
-	<form method="post" action="add">
+	<form method="post" action="add" class="pkeep">
 		<fieldset>
 			<legend>Request Form</legend>
 
@@ -68,7 +77,10 @@
 
 			<div class="row">
 				<div class="large-12 columns center">
-					<p><input type="submit" class="success button give" value="Give Me Free Terracoins!"/></p>
+					<p>
+						<input style="width:10%;" type="submit" class="success button give" value="3"/>
+						<input style="width:89%;" type="submit" class="success button give" value="Give Me Free Terracoins!"/>
+					</p>
 					<iframe scrolling="no" style="border: 0; width: 468px; height: 60px;" src="http://coinurl.com/get.php?id=10075"></iframe>
 				</div>
 
@@ -99,7 +111,7 @@
 {% endblock %}
 
 {% block stats %}
-	<h4>Statstics</h4>
+	<h4>Statistics</h4>
 	<p>
 		We have processed <b>{{stats}}</b> transactions.
 	</p>
