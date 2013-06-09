@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+	<h3>Your Account</h3>
+	<p style="padding:0px; padding-bottom: 5px; margin:0px;">
+We will always send your first faucet request immediately. After that, to keep transaction fees low, we will only send 
+after you meet the send minimum listed below. 
+</p>
+<div style="text-align:center;">
+
+<span class="success label" style=" padding: 35px; font-size: 30px;">Balance:<br/>0.0001 TRC</span>
+<span class="secondary label" style=" padding: 35px;  font-size: 30px;">Send Minimum:<br/>0.0005 TRC</span>
+</div>
+
+		<h3>Transactions</h3>
+
+		<table>
+				<thead>
+					<tr>
+						<th class="time">Time</th>
+						<th class="ip">Amount</th>
+						<th class="transid">Transaction ID</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td>11 mins, 32 secs ago</td><td>0.0001 TRC</td><td><a href="http://cryptocoinexplorer.com:3750/tx/be02953d99dcf859dbfb1fd725c6c236596686ce38be9fc9e46c1d48b43cc774">be02953d99dcf859dbfb1fd725c6c23659668...</a></td></tr><tr><td>16 mins, 42 secs ago</td><td>0.0005 TRC</td><td><a href="http://cryptocoinexplorer.com:3750/tx/417f3f5380132ef497f0284b1ff6a5af2164aa38f472d85f320e826e9b1d8aec">417f3f5380132ef497f0284b1ff6a5af2164a...</a></td></tr>
+				</tbody>
+			</table>
+
+	
+
+	<h3>Get Free Terracoins</h3>
+	<p>
+		You may submit up to 3 times (then 1 time per hour), and use coupons to get higher payouts. 
+	</p>
+
+	<form method="post" action="http://trcfaucet.com/add">
+		<fieldset>
+			<legend>Request Form</legend>
+
+			<div class="row">
+				<div class="large-12 columns">
+					<label>Terracoin Address</label>
+					<input name="address" type="text" placeholder="ex. 14kBtNP5NfCFTFvn6jsEL6TUg8hVBehwYx">
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="large-6 columns">
+					<label>Coupon</label>
+					<input type="text" name="coupon" placeholder="Secret code for more coins. Optional.">
+				</div>
+				<div class="large-6 columns">
+					<div class="row collapse">
+						<label>Captcha</label>
+							<div class="small-3 columns">
+							<span class="prefix">
+								6+6 = ?
+							</span>
+						</div>
+						<div class="small-9 columns">
+							<input type="text" name="captcha" placeholder="Solve the math problem.">
+							<input type="hidden" name="captcha_awns" value="7b52009b64fd0a2a49e6d8a939753077792b0554">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="large-12 columns center">
+					<p class="pkeep">
+						
+						<input type="submit" class="success button give" value="Give Me Free Terracoins!">
+					</p>
+					<iframe scrolling="no" style="border: 0px; width: 468px; height: 60px; display: none !important; visibility: hidden !important; opacity: 0 !important;" src="about:blank" width="0" height="0"></iframe>
+				</div>
+
+			</div>
+		</fieldset>
+	</form>
+
+{% endblock %}
+
+{% block stats %}
+	<h4>Statistics</h4>
+	<p>
+		We have processed <b>{{stats}}</b> transactions.
+	</p>
+{% endblock %}

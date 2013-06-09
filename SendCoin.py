@@ -135,7 +135,7 @@ def send_coins():
 						 DEFAULT_SEND_VAL, conn)
 		except ValueError as detail: 
 			return "Something Broke: " + str(detail) 
-		#except:	return "Something Broke..."
+		except:	return "Script Fail..."
 
 	# Close Database
 	conn.close()
