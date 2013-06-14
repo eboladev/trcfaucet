@@ -84,7 +84,7 @@ def com_send(drip_id, address, coupon, amount, conn):
 		coupon_val = float(Coupon(conn).use(coupon))
 		print(coupon_val)
 		if coupon_val > 0: amount = coupon_val
-		else: amount = int(app.config['DEFAULT_SEND_VAL'])
+		else: amount = float(app.config['DEFAULT_SEND_VAL'])
 		print(amount)
 
 		# Hardcoded limit at 0.1 TRC in case the coupon system breaks
