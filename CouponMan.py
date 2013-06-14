@@ -20,7 +20,7 @@ if int(choice) == 1:
 	# Warning String
 	chk_str = "Are you sure you want to create coupon(s) with the following "
 	chk_str += "parameters(y/n):\n (Coupons: {0} / Value: {1} / Uses: {2}) \n"
-	chk_str = chk_str.format(coupon_num, coupon_val, coupon_val)
+	chk_str = chk_str.format(coupon_num, coupon_val, coupon_use)
 
 	# Create Coupons
 	if str(raw_input(chk_str)) == 'y':
@@ -39,7 +39,6 @@ if int(choice) == 1:
 		print("Done...")
 		conn.close()	
 
-
 # Clear Expired Coupons
 elif int(choice) == 2:
 	if str(raw_input("Are you sure(y/n)?")) == 'y':
@@ -47,7 +46,6 @@ elif int(choice) == 2:
 		Coupon(conn).clear()
 		print("Done...")
 		conn.close()	
-
 
 # Close Database
 print("Exiting...")
