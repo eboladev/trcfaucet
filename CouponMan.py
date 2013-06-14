@@ -11,7 +11,7 @@ print("2) Clear Expired Coupons")
 choice = raw_input("option: ")
 
 # Generate Coupons
-if choice == 1:
+if int(choice) == 1:
 	# Input Params
 	coupon_num = raw_input("Number of Coupons: ")
 	coupon_val = raw_input("Coupon Value: ")
@@ -23,7 +23,7 @@ if choice == 1:
 	chk_str = chk_str.format(coupon_num, coupon_val, coupon_val)
 
 	# Create Coupons
-	if raw_input(check) == "y":
+	if str(raw_input(check)) == 'y':
 		# Connect to Database
 		conn = sqlite3.connect(DATABASE_FILE)
 		mc = Coupon(conn)
@@ -41,13 +41,13 @@ if choice == 1:
 
 
 # Clear Expired Coupons
-elif choice == 2:
-	if raw_input("Are you sure(y/n)?") == 'y':
+elif int(choice) == 2:
+	if str(raw_input("Are you sure(y/n)?")) == 'y':
 		conn = sqlite3.connect(DATABASE_FILE)
 		Coupon(conn).clear()
 		print("Done...")
 		conn.close()	
-		
+
 
 # Close Database
 print("Exiting...")
