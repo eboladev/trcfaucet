@@ -13,9 +13,9 @@ choice = raw_input("option: ")
 # Generate Coupons
 if int(choice) == 1:
 	# Input Params
-	coupon_num = raw_input("Number of Coupons: ")
-	coupon_val = raw_input("Coupon Value: ")
-	coupon_use = raw_input("Number of Uses: ")
+	coupon_num = int(raw_input("Number of Coupons: "))
+	coupon_val = int(raw_input("Coupon Value: "))
+	coupon_use = int(raw_input("Number of Uses: "))
 
 	# Warning String
 	chk_str = "Are you sure you want to create coupon(s) with the following "
