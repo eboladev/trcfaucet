@@ -14,7 +14,7 @@ choice = raw_input("option: ")
 if int(choice) == 1:
 	# Input Params
 	coupon_num = int(raw_input("Number of Coupons: "))
-	coupon_val = int(raw_input("Coupon Value: "))
+	coupon_val = float(raw_input("Coupon Value: "))
 	coupon_use = int(raw_input("Number of Uses: "))
 
 	# Warning String
