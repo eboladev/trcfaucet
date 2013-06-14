@@ -14,12 +14,11 @@ values (null, datetime('now'), "69.87.160.3",
 drop table if exists coupon_list;
 create table coupon_list (
 	id integer primary key autoincrement,
-	coup_type string not null,
 	coup_value integer not null,
 	max_use integer not null,
 	access_key string not null
 );
-insert into coupon_list (id, coup_type, coup_value, max_use, access_key) 
-values (null, 'MULTI_USE', 0.00015, 1000, 'moremoney');
-insert into coupon_list (id, coup_type, coup_value, max_use, access_key) 
-values (null, 'MULTI_USE', 0.0002, 1000, 'doublemoney');
+insert into coupon_list (id, coup_value, max_use, access_key) 
+values (null, 0.00015, 1000, 'moremoney');
+insert into coupon_list (id, coup_value, max_use, access_key) 
+values (null, 0.0002, 1000, 'doublemoney');

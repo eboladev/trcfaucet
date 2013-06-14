@@ -31,7 +31,7 @@ if int(choice) == 1:
 
 		# Create Coupons
 		for i in range(coupon_num):
-			coupon_list.append(mc.new("CAP_USE", coupon_val, coupon_use))
+			coupon_list.append(mc.new(coupon_val, coupon_use))
 
 		# Output Coupon Codes:
 		print("Coupon Codes:\n")

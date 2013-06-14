@@ -23,18 +23,13 @@ class Coupon:
 		self.conn = conn
 		self.cursor = self.conn.cursor()
 
-	def new(self, coup_type, coup_value, max_use = 1):
-		query = "INSERT INTO coupon_list (id, coup_type, coup_value, max_use, access_key)"
+	def new(self, coup_value, max_use = 1):
+		query = "INSERT INTO coupon_list (id, coup_value, max_use, access_key)"
 		query += "VALUES (NULL, ?, ?, ?, ?)"
-
-		if coup_type == 'SINGLE_USE' or coup_type == 'CAP_USE':
-			pass
-		else:
-			return "Unrecognized coupon type."
 
 		access_key = str(self.gen_access_key()).lower()
 
-		self.cursor.execute(query, (coup_type, coup_value, max_use, access_key,))
+		self.cursor.execute(query, (coup_value, max_use, access_key,))
 		self.conn.commit()
 
 		return access_key
@@ -141,8 +136,9 @@ def send_coins():
 
 # Infinite Loop ----------------------------------------------------------------
 if __name__ == '__main__':
+	check_timeout = int(app.config['CHECK_SEND_SEC'])
 	while True:
 		print("Checking for drips...")
 		print(send_coins())
-		print("Sleeping for 15 seconds...")
-		sleep(15)
+		print("Sleeping for {0} seconds...".format(check_timeout)
+		sleep(check_timeout)
