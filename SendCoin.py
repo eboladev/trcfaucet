@@ -83,7 +83,9 @@ def com_send(drip_id, address, coupon, amount, conn):
 		# Check coupon amount
 		coupon_val = float(Coupon(conn).use(coupon))
 		if coupon_val > 0: amount = coupon_val
-		else: amount = app.config['DEFAULT_SEND_VAL']
+		print(coupon_val)
+		else: amount = int(app.config['DEFAULT_SEND_VAL'])
+		print(amount)
 
 		# Hardcoded limit at 0.1 TRC in case the coupon system breaks
 		if amount > app.config['HARD_LIMIT']: amount = app.config['HARD_LIMIT']
@@ -92,8 +94,9 @@ def com_send(drip_id, address, coupon, amount, conn):
 		if (get_balance() - amount) > app.config['LOW_BAL_LIMIT']:
 			# Construct Command
 			command = "{0} sendtoaddress {1} {2}"
-			command = command.format(app.config['COIN_CLIENT'], str(address), str(amount))
+			command = command.format(str(app.config['COIN_CLIENT']), str(address), str(amount))
 			trans_id = commands.getstatusoutput(command)[1]
+			print(command)
 
 			# Update
 			c = conn.cursor()
@@ -128,7 +131,7 @@ def send_coins():
 						 app.config['DEFAULT_SEND_VAL'], conn)
 		except ValueError as detail: 
 			return "Something Broke: " + str(detail) 
-		except:	return "Script Fail..."
+		#except:	return "Script Fail..."
 
 	# Close Database
 	conn.close()
@@ -140,5 +143,5 @@ if __name__ == '__main__':
 	while True:
 		print("Checking for drips...")
 		print(send_coins())
-		print("Sleeping for {0} seconds...".format(check_timeout)
+		print("Sleeping for {0} seconds...".format(check_timeout))
 		sleep(check_timeout)
