@@ -23,7 +23,7 @@ if int(choice) == 1:
 	chk_str = chk_str.format(coupon_num, coupon_val, coupon_val)
 
 	# Create Coupons
-	if str(raw_input(check)) == 'y':
+	if str(raw_input(check_str)) == 'y':
 		# Connect to Database
 		conn = sqlite3.connect(DATABASE_FILE)
 		mc = Coupon(conn)
