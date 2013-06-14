@@ -70,6 +70,11 @@ class Coupon:
 			return coup_val
 
 		return 0
+
+	def clear(self):
+		query = "delete from coupon_list where max_use=0"
+		self.cursor.execute(query)
+		self.conn.commit()
 		
 
 # Send Functions ---------------------------------------------------------------
