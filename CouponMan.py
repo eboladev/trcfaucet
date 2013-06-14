@@ -8,14 +8,14 @@ DATABASE_FILE = '/root/trc.db'
 print("Welcome to Coupon Manager...")
 print("1) Generate Coupons")
 print("2) Clear Expired Coupons")
-choice = input("option: ")
+choice = raw_input("option: ")
 
 # Generate Coupons
 if choice == 1:
 	# Input Params
-	coupon_num = input("Number of Coupons: ")
-	coupon_val = input("Coupon Value: ")
-	coupon_use = input("Number of Uses: ")
+	coupon_num = raw_input("Number of Coupons: ")
+	coupon_val = raw_input("Coupon Value: ")
+	coupon_use = raw_input("Number of Uses: ")
 
 	# Warning String
 	chk_str = "Are you sure you want to create coupon(s) with the following "
@@ -23,7 +23,7 @@ if choice == 1:
 	chk_str = chk_str.format(coupon_num, coupon_val, coupon_val)
 
 	# Create Coupons
-	if input(check) == "y":
+	if raw_input(check) == "y":
 		# Connect to Database
 		conn = sqlite3.connect(DATABASE_FILE)
 		mc = Coupon(conn)
@@ -40,7 +40,7 @@ if choice == 1:
 
 # Clear Expired Coupons
 elif choice == 2:
-	if input("Are you sure(y/n)?") == 'y':
+	if raw_input("Are you sure(y/n)?") == 'y':
 		conn = sqlite3.connect(DATABASE_FILE)
 		Coupon(conn).clear()
 		print("Done...")
