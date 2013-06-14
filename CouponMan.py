@@ -37,6 +37,8 @@ if choice == 1:
 		print("Coupon Codes:\n")
 		for i in coupon_list: print(i)
 		print("Done...")
+		conn.close()	
+
 
 # Clear Expired Coupons
 elif choice == 2:
@@ -44,7 +46,8 @@ elif choice == 2:
 		conn = sqlite3.connect(DATABASE_FILE)
 		Coupon(conn).clear()
 		print("Done...")
+		conn.close()	
+		
 
 # Close Database
 print("Exiting...")
-conn.close()	
