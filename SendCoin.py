@@ -1,30 +1,23 @@
-import sqlite3
-import commands
-import hashlib
 import random
+import sqlite3
+import hashlib
+import commands
 from time import sleep
+from flask import Flask
 from CryptoTap import DripRequest
 
 
-# Globals ----------------------------------------------------------------------
-DATABASE_FILE = '/root/trc.db'
-DATABASE_TABLE = 'drip_request'
-COIN_CLIENT = 'terracoind'
-COIN_NAME = 'TRC'
-DEFAULT_SEND_VAL = 0.0001
-HARD_LIMIT = 0.01
-LOW_BAL_LIMIT = 0.001
+# Load Settings  ---------------------------------------------------------------
+app = Flask(__name__)
+app.config.from_pyfile('settings.cfg')
 
 
 # Coupon System  ---------------------------------------------------------------
 class Coupon:
 	def __init__(self, conn):
 		"""
-		Validates coupons. Also allows the admin to create new coupons of the 
-		following types:
-
-		SINGLE_USE - Only redeems once for a set value.
-		CAP_USE - Only a set number of coupons can be redeemed.
+		Object that allows the admin to create and manage coupons. Also allows
+		the system to validate and lookup coupons. 
 
 		"""
 		self.conn = conn
@@ -81,7 +74,7 @@ class Coupon:
 def get_balance():
 	"Retrieves the current balance."
 	com = '{0} getbalance'
-	return float(commands.getstatusoutput(com.format(COIN_CLIENT))[1])
+	return float(commands.getstatusoutput(com.format(app.config['COIN_CLIENT']))[1])
 
 def com_send(drip_id, address, coupon, amount, conn):
 		"""
@@ -95,16 +88,16 @@ def com_send(drip_id, address, coupon, amount, conn):
 		# Check coupon amount
 		coupon_val = float(Coupon(conn).use(coupon))
 		if coupon_val > 0: amount = coupon_val
-		else: amount = DEFAULT_SEND_VAL
+		else: amount = app.config['DEFAULT_SEND_VAL']
 
 		# Hardcoded limit at 0.1 TRC in case the coupon system breaks
-		if amount > HARD_LIMIT: amount = HARD_LIMIT
+		if amount > app.config['HARD_LIMIT']: amount = app.config['HARD_LIMIT']
 		
 		# Make sure balance is not empty before sending
-		if (get_balance() - amount) > LOW_BAL_LIMIT:
+		if (get_balance() - amount) > app.config['LOW_BAL_LIMIT']:
 			# Construct Command
 			command = "{0} sendtoaddress {1} {2}"
-			command = command.format(COIN_CLIENT, str(address), str(amount))
+			command = command.format(app.config['COIN_CLIENT'], str(address), str(amount))
 			trans_id = commands.getstatusoutput(command)[1]
 
 			# Update
@@ -115,7 +108,7 @@ def com_send(drip_id, address, coupon, amount, conn):
 
 			# Console Message
 			con_message = "Sent {0} {1} to {2}. Traction ID: {3}"
-			return con_message.format(amount, COIN_NAME, address, trans_id)
+			return con_message.format(amount, app.config['COIN_NAME'], address, trans_id)
 		else:
 			return "Insufficient Funds!"
 
@@ -123,7 +116,7 @@ def com_send(drip_id, address, coupon, amount, conn):
 def send_coins():
 	"""Sends queued coins."""
 	# Connect to Database
-	conn = sqlite3.connect(DATABASE_FILE)
+	conn = sqlite3.connect(app.config['DATABASE_FILE'])
 	c = conn.cursor()
 
 	# Do Query
@@ -137,7 +130,7 @@ def send_coins():
 		try:
 			drip = DripRequest(row[3], row[4], row[2], row[0])
 			return com_send( drip.drip_id, drip.address, drip.coupon,
-						 DEFAULT_SEND_VAL, conn)
+						 app.config['DEFAULT_SEND_VAL'], conn)
 		except ValueError as detail: 
 			return "Something Broke: " + str(detail) 
 		except:	return "Script Fail..."
