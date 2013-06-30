@@ -19,7 +19,7 @@ DATABASE = '/root/trc.db'
 DATABASE_INIT = 'schema.sql'
 DATABASE_TABLE = 'drip_request'
 REQUEST_LIMIT = 3
-REQUEST_TIME_LIMIT = 60 # minutes
+REQUEST_TIME_LIMIT = 1440 # minutes
 COIN_NAME = 'TRC'
 BLOCK_EXPLORER_URL = 'http://cryptocoinexplorer.com:3750/tx/'
 
@@ -294,4 +294,5 @@ def coupon123(): return get_coupons()
 
 # Main -------------------------------------------------------------------------
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	#app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=80)

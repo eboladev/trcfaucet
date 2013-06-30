@@ -4,6 +4,7 @@ apt-get update
 apt-get -y install git apt-file python3 screen sqlite3 python-setuptools python-flask
 apt-get update
 apt-file update
+easy_install gunicorn
 
 git clone https://github.com/terracoin/terracoin.git
 cd ~/terracoin/src
