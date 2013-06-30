@@ -48,8 +48,8 @@ class Coupon:
 		if coupon == None: return 0
 
 		coup_id = coupon[0]
-		coup_val = coupon[2]
-		max_use = coupon[3]
+		coup_val = coupon[1]
+		max_use = coupon[2]
 
 		if max_use >= 1:
 			query = "update coupon_list set max_use=(max_use - 1) where id=?"
