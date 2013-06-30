@@ -1,3 +1,5 @@
 rm -rf ~/trcfaucet
 git clone https://github.com/super3/trcfaucet.git
-python ~/trcfaucet/CryptoTap.py
+cd ~/trcfaucet/
+#python CryptoTap.py
+gunicorn -w 3 -b 0.0.0.0:80  CryptoTap:app
