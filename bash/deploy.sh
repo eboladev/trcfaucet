@@ -1,3 +1,3 @@
-rm -rf ~/CryptoTap
+rm -rf ~/trcfaucet
 git clone https://github.com/super3/trcfaucet.git
-python ~/CryptoTap/CryptoTap.py
+python ~/trcfaucet/CryptoTap.py
