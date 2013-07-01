@@ -25,7 +25,7 @@ class Coupon:
 
 	def new(self, coup_value, max_use = 1):
 		query = "INSERT INTO coupon_list (id, coup_value, max_use, access_key)"
-		query += "VALUES (NULL, ?, ?, ?, ?)"
+		query += "VALUES (NULL, ?, ?, ?)"
 
 		access_key = str(self.gen_access_key()).lower()
 
