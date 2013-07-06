@@ -50,14 +50,20 @@
 		<p><a href="/forum" class="success button give">Forum / Help</a></p>
 		<p><a href="/resources" class="success button give">Spend and Trade Terracoin</a></p>
 
-		<h4>Donations</h4>
+		<h4>Info</h4>
 		<p class="donations">
-			We rely on your donations to keep the faucet and this site running. Even a small donation helps.<br/>
+			{% block stats %}{% endblock %}
+			We rely on donations to keep the faucet and this site running. Even a small bit helps.<br/>
 			<br/><b>TRC:</b> 1EAo9oBFKQXBzChnX4jJQ2DKCTeTe8iZHr
 			<br/><b>BTC:</b> 1DZ5XxwaGkrhC8E1zCrmB5Yahk46DSDhiE
+
+
 		</p>
 
-		{% block stats %}{% endblock %}
+		<h4>Twitter</h4>
+		<a class="twitter-timeline" href="https://twitter.com/TRCFaucet" data-widget-id="353528506342318080">Tweets by @TRCFaucet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
 
 		<h4>Resources</h4>
 		<p>

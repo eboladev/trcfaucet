@@ -15,7 +15,8 @@ from contextlib import closing
 
 
 # Global Configs ---------------------------------------------------------------
-DATABASE = '/root/trc.db'
+#DATABASE = '/root/trc.db'
+DATABASE = 'C://Users//super_000//Code//trcfaucet//trc.db'
 DATABASE_INIT = 'schema.sql'
 DATABASE_TABLE = 'drip_request'
 REQUEST_LIMIT = 3
@@ -43,7 +44,7 @@ def teardown_request(exception):
 
 def init_db():
 	with closing(connect_db()) as db:
-		with app.open_resource(app.config['DATABASE_INIT']) as f:
+		with app.open_resource(app.config['DATABASE_INIT'], mode='r') as f:
 			db.cursor().executescript(f.read())
 		db.commit()
 
@@ -226,7 +227,8 @@ def get_html(save_time, ip, trans_id):
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success / error page."""
 	captcha = (randrange(1, 15), randrange(1, 15))
-	captcha_awns = hashlib.sha1(str(captcha[0] + captcha[1])).hexdigest()
+	captcha = str(captcha[0] + captcha[1]).encode('utf-8')
+	captcha_awns = hashlib.sha1(captcha).hexdigest()
 
 	query = 'SELECT * FROM drip_request ORDER BY id DESC LIMIT 10'
 	recent = g.db.execute(query)
@@ -294,5 +296,5 @@ def coupon123(): return get_coupons()
 
 # Main -------------------------------------------------------------------------
 if __name__ == '__main__':
-	#app.run(host='0.0.0.0', port=80, debug=True)
-	app.run(host='0.0.0.0', port=80)
+	app.run(host='0.0.0.0', port=80, debug=True)
+	#app.run(host='0.0.0.0', port=80)

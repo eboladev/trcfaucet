@@ -1,21 +1,23 @@
 import sqlite3
-from SendCoin import Coupon
+from flask import Flask
+from Coupon import Coupon
 
 # Load Database
-DATABASE_FILE = '/root/trc.db'
+app = Flask(__name__)
+app.config.from_pyfile('settings.cfg')
 
 # Welcome Message and Choice
 print("Welcome to Coupon Manager...")
 print("1) Generate Coupons")
 print("2) Clear Expired Coupons")
-choice = raw_input("option: ")
+choice = input("option: ")
 
 # Generate Coupons
 if int(choice) == 1:
 	# Input Params
-	coupon_num = int(raw_input("Number of Coupons: "))
-	coupon_val = float(raw_input("Coupon Value: "))
-	coupon_use = int(raw_input("Number of Uses: "))
+	coupon_num = int(input("Number of Coupons: "))
+	coupon_val = float(input("Coupon Value: "))
+	coupon_use = int(input("Number of Uses: "))
 
 	# Warning String
 	chk_str = "Are you sure you want to create coupon(s) with the following "
@@ -23,15 +25,16 @@ if int(choice) == 1:
 	chk_str = chk_str.format(coupon_num, coupon_val, coupon_use)
 
 	# Create Coupons
-	if str(raw_input(chk_str)) == 'y':
+	if str(input(chk_str)) == 'y':
 		# Connect to Database
-		conn = sqlite3.connect(DATABASE_FILE)
+		conn = sqlite3.connect(app.config['DATABASE_FILE'])
 		mc = Coupon(conn)
 		coupon_list = []
 
 		# Create Coupons
 		for i in range(coupon_num):
-			coupon_list.append(mc.new(coupon_val, coupon_use))
+			new_coup = mc.new(coupon_val, coupon_use)
+			coupon_list.append(new_coup)
 
 		# Output Coupon Codes:
 		print("Coupon Codes:\n")
@@ -41,8 +44,8 @@ if int(choice) == 1:
 
 # Clear Expired Coupons
 elif int(choice) == 2:
-	if str(raw_input("Are you sure(y/n)?")) == 'y':
-		conn = sqlite3.connect(DATABASE_FILE)
+	if str(input("Are you sure(y/n)?")) == 'y':
+		conn = sqlite3.connect(app.config['DATABASE_FILE'])
 		Coupon(conn).clear()
 		print("Done...")
 		conn.close()	
