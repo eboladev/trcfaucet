@@ -187,11 +187,11 @@ class DripRequest:
 			print(last_req)
 			print(REQUEST_TIME_LIMIT)
 			self.save_db()
-		elif num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
-			print("test")
-			print(last_req)
-			print(REQUEST_TIME_LIMIT)
-			self.save_db()
+		#elif num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
+		#	print("test")
+		#	print(last_req)
+		#	print(REQUEST_TIME_LIMIT)
+		#	self.save_db()
 		else: # last_req < 60
 			print(last_req)
 			self.time_left = REQUEST_TIME_LIMIT - last_req
