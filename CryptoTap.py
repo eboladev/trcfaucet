@@ -15,8 +15,8 @@ from contextlib import closing
 
 
 # Global Configs ---------------------------------------------------------------
-#DATABASE = '/root/trc.db'
-DATABASE = 'C://Users//super_000//Code//trcfaucet//trc.db'
+DATABASE = '/root/trc.db'
+#DATABASE = 'C://Users//super_000//Code//trcfaucet//trc.db'
 DATABASE_INIT = 'schema.sql'
 DATABASE_TABLE = 'drip_request'
 REQUEST_LIMIT = 3
@@ -262,7 +262,8 @@ def add():
 	ip = str(request.remote_addr)
 	try:
 		captcha_try = hashlib.sha1(request.form['captcha']).hexdigest()
-		if captcha_try != request.form['captcha_awns']: 
+		captcha_awn = request.form['captcha_awns']
+		if not captcha_try == captcha_awn: 
 			raise ValueError
 		DripRequest(request.form['address'], request.form['coupon'], ip).save()
 		print("Good drip request. Saving to database...")
