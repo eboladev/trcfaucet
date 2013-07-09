@@ -227,7 +227,7 @@ def get_html(save_time, ip, trans_id):
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success / error page."""
 	captcha = (randrange(1, 15), randrange(1, 15))
-	captcha = str(captcha[0] + captcha[1]).encode('utf-8')
+	captcha = str(int(captcha[0] + captcha[1])).encode('utf-8')
 	captcha_awns = hashlib.sha1(captcha).hexdigest()
 
 	query = 'SELECT * FROM drip_request ORDER BY id DESC LIMIT 10'
@@ -261,7 +261,7 @@ def index(): return get_index()
 def add(): 
 	ip = str(request.remote_addr)
 	try:
-		captcha_try = hashlib.sha1(request.form['captcha']).hexdigest()
+		captcha_try = hashlib.sha1(str(request.form['captcha']).encode('utf-8')).hexdigest()
 		captcha_awn = request.form['captcha_awns']
 		if not captcha_try == captcha_awn: 
 			raise ValueError
@@ -297,5 +297,5 @@ def coupon123(): return get_coupons()
 
 # Main -------------------------------------------------------------------------
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=5000, debug=True)
 	#app.run(host='0.0.0.0', port=80)
