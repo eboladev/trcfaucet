@@ -23,7 +23,7 @@ class SendCoin:
 		return float(commands.getstatusoutput(com)[1])
 
 
-	def com_send(drip_id, address, coupon, amount, conn):
+	def com_send(self, drip_id, address, coupon, amount, conn):
 		"""
 		Send the specified amount to the address Uses the following unix
 		command to do so:
@@ -64,7 +64,7 @@ class SendCoin:
 			return "Insufficient Funds!"
 
 
-	def send_coins():
+	def send_coins(self):
 		"""Sends queued coins."""
 		# Connect to Database
 		conn = sqlite3.connect(app.config['DATABASE_FILE'])
@@ -89,7 +89,7 @@ class SendCoin:
 		# Close Database
 		conn.close()
 
-	def run():
+	def run(self):
 		try: 
 			print("SendCoin 'Daemon' Active. Press CTRL+C to exit.")
 			while True:
