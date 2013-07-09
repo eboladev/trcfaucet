@@ -14,7 +14,7 @@
 		</div>
 	{% elif form_submit == "duplicate" %}
 		<div data-alert class="alert-box alert">
-			You must like Terracoin. Please wait 1 day before making another request.
+			You must like Terracoin. Please wait {{last_req}} minutes before making another request.
 			<a href="#" class="close">&times;</a>
 		</div>
 	{% endif %}
@@ -64,7 +64,7 @@
 						<label>Captcha</label>
 							<div class="small-3 columns">
 							<span class="prefix">
-								{{captcha[0]}}+{{captcha[1]}} = ?
+								{{captcha_x}}+{{captcha_y}} = ?
 							</span>
 						</div>
 						<div class="small-9 columns">

@@ -2,7 +2,7 @@ import re
 import sys
 import sqlite3
 import hashlib
-from random import randrange
+from random import randint
 from datetime import datetime
 
 from flask import g
@@ -15,12 +15,12 @@ from contextlib import closing
 
 
 # Global Configs ---------------------------------------------------------------
-DATABASE = '/root/trc.db'
-#DATABASE = 'C://Users//super_000//Code//trcfaucet//trc.db'
+#DATABASE = '/root/trc.db'
+DATABASE = 'C://Users//super_000//Code//trcfaucet//trc.db'
 DATABASE_INIT = 'schema.sql'
 DATABASE_TABLE = 'drip_request'
 REQUEST_LIMIT = 3
-REQUEST_TIME_LIMIT = 1440 # minutes
+REQUEST_TIME_LIMIT = 60 # minutes
 COIN_NAME = 'TRC'
 BLOCK_EXPLORER_URL = 'http://cryptocoinexplorer.com:3750/tx/'
 
@@ -155,7 +155,7 @@ class DripRequest:
 		cur = g.db.execute(query, (self.ip,))
 		req_date = cur.fetchone()
 		if req_date == None:
-			return 0
+			return int(REQUEST_TIME_LIMIT + 1)
 		else:
 			req_datetime = datetime.strptime(req_date[1], "%Y-%m-%d %H:%M:%S")
 			diff_time = datetime.now() - req_datetime
@@ -183,11 +183,18 @@ class DripRequest:
 
 		if self.address == '12Ai7QavwJbLcPL5XS276fkYZpXPXTPFC7':
 			self.save_db()
-		elif num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
-			self.save_db()
 		elif last_req >= app.config['REQUEST_TIME_LIMIT']:
+			print(last_req)
+			print(REQUEST_TIME_LIMIT)
+			self.save_db()
+		elif num_ip < REQUEST_LIMIT and num_address < REQUEST_LIMIT:
+			print("test")
+			print(last_req)
+			print(REQUEST_TIME_LIMIT)
 			self.save_db()
 		else: # last_req < 60
+			print(last_req)
+			self.time_left = REQUEST_TIME_LIMIT - last_req
 			raise LookupError("Last request less than 60 mins ago.")
 
 	def send(self):
@@ -195,6 +202,19 @@ class DripRequest:
 
 
 # Helper Functions -------------------------------------------------------------
+def last_request(ip):
+	"""Return the number of minutes since the last drip request."""
+	query = "SELECT * FROM drip_request WHERE ip=? ORDER BY id DESC"
+	cur = g.db.execute(query, (ip,))
+	req_date = cur.fetchone()
+	if req_date == None:
+		return int(REQUEST_TIME_LIMIT + 1)
+	else:
+		req_datetime = datetime.strptime(req_date[1], "%Y-%m-%d %H:%M:%S")
+		diff_time = datetime.now() - req_datetime
+		diff_time = divmod(diff_time.seconds, 60)
+		return int(diff_time[0]) # minutes since last request
+
 def sub_cypher(ip, offset):
 	"""
 	A basic number substitution cypher using a number offset. Don't use offset
@@ -226,9 +246,11 @@ def get_html(save_time, ip, trans_id):
 		
 def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success / error page."""
-	captcha = (randrange(1, 15), randrange(1, 15))
-	captcha = str(int(captcha[0] + captcha[1])).encode('utf-8')
+	captcha_x = int(randint(1, 15))
+	captcha_y = int(randint(1, 15))
+	captcha = str(int(captcha_x + captcha_y)).encode('utf-8')
 	captcha_awns = hashlib.sha1(captcha).hexdigest()
+	print(captcha_awns)
 
 	query = 'SELECT * FROM drip_request ORDER BY id DESC LIMIT 10'
 	recent = g.db.execute(query)
@@ -237,10 +259,12 @@ def get_index(form_submit_status = None):
 	
 	cur = g.db.execute('SELECT Count(*) FROM drip_request')
 	stats = 14759 + int(cur.fetchone()[0])
+	last_req = REQUEST_TIME_LIMIT - last_request(str(request.remote_addr))
 
 	return render_template('index.html', recent=recent,
-						   form_submit=form_submit_status, captcha=captcha,
-						   captcha_awns=captcha_awns, stats=stats)
+						   form_submit=form_submit_status, captcha_x=captcha_x,
+						   captcha_y=captcha_y,captcha_awns=captcha_awns, stats=stats,
+						   last_req=last_req)
 
 def get_coupons_html(access_key, coup_value, max_use):
 	html = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>"
@@ -265,6 +289,7 @@ def add():
 		captcha_awn = request.form['captcha_awns']
 		if not captcha_try == captcha_awn: 
 			raise ValueError
+		print("test")
 		DripRequest(request.form['address'], request.form['coupon'], ip).save()
 		print("Good drip request. Saving to database...")
 		return redirect(url_for('good'))
