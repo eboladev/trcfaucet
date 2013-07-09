@@ -43,7 +43,7 @@ class SendCoin:
 		if amount > app.config['HARD_LIMIT']: amount = app.config['HARD_LIMIT']
 		
 		# Make sure balance is not empty before sending
-		if (get_balance() - amount) > app.config['LOW_BAL_LIMIT']:
+		if (self.get_balance() - amount) > app.config['LOW_BAL_LIMIT']:
 			# Construct Command
 			command = "{0} sendtoaddress {1} {2}"
 			command = command.format(app.config['COIN_CLIENT'], address, amount)
