@@ -15,8 +15,8 @@ from contextlib import closing
 
 
 # Global Configs ---------------------------------------------------------------
-#DATABASE = '/root/trc.db'
-DATABASE = 'C://Users//super_000//Code//trcfaucet//trc.db'
+DATABASE = '/root/trc.db'
+#DATABASE = 'C://Users//super_000//Code//trcfaucet//trc.db'
 DATABASE_INIT = 'schema.sql'
 DATABASE_TABLE = 'drip_request'
 REQUEST_LIMIT = 3
