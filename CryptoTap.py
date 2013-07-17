@@ -155,7 +155,7 @@ class DripRequest:
 		"""Insert object data into database."""
 		query = "INSERT INTO drip_request"
 		query += "(id, crdate, ip, address, coupon, trans_id)"
-		query += "VALUES (NULL, datetime('now'), ?, ?, ?, ?)"
+		query += "VALUES (NULL, datetime('now','localtime'), ?, ?, ?, ?)"
 		g.db.execute(query, (self.ip, self.address, self.coupon, "UNSENT",))
 		g.db.commit()
 
@@ -164,6 +164,7 @@ class DripRequest:
 		num_ip = self.count_unique("ip", self.ip)
 		num_address = self.count_unique("address", self.address)
 		last_req = last_request(self.ip)
+		app.logger.debug("last_req:" + str(last_req))
 
 		if self.address == '12Ai7QavwJbLcPL5XS276fkYZpXPXTPFC7':
 			self.save_db()
@@ -186,9 +187,9 @@ def last_request(ip):
 	"""Return the number of minutes since the last drip request."""
 	query = "SELECT * FROM drip_request WHERE ip=? ORDER BY id DESC"
 	req_date = g.db.execute(query, (ip,)).fetchone()
-	app.logger.debug(req_date)
+	#app.logger.debug(req_date)
 	if req_date == None:
-		return int(REQUEST_TIME_LIMIT + 1)
+		return int(app.config['REQUEST_TIME_LIMIT'] + 1)
 	else:
 		req_datetime = datetime.strptime(req_date[1], "%Y-%m-%d %H:%M:%S")
 		diff_time = datetime.now() - req_datetime
@@ -211,8 +212,8 @@ def sub_cypher(ip, offset):
 def get_html(save_time, ip, trans_id):
 	"""Transform database output into a table."""
 	diff_time = datetime.now()-datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
-	diff_time = divmod(diff_time.seconds, 60)
-	diff_time = "{0} mins, {1} secs ago".format(diff_time[0], diff_time[1])
+	diff_time = divmod(diff_time.total_seconds(), 60)
+	diff_time = "{0} mins, {1} secs ago".format(int(diff_time[0]), int(diff_time[1]))
 	obfuscated_ip = ''.join(map(str, sub_cypher(list(ip), 756)))
 
 	if trans_id == "UNSENT":
@@ -243,7 +244,7 @@ def get_index(form_submit_status = None):
 	stats = "{:,}".format(total_trans)
 
 	# find time since last drip request
-	last_req = last_request(str(request.remote_addr))
+	last_req = app.config['REQUEST_TIME_LIMIT'] - last_request(str(request.remote_addr))
 
 	# pass all data to the template for rendering
 	return render_template('index.html', recent=recent,
@@ -334,7 +335,7 @@ def coupon123(): return get_coupons()
 if __name__ == '__main__':
 	# logging
 	handler = RotatingFileHandler('foo.log', maxBytes=10000, backupCount=1)
-	handler.setLevel(logging.INFO)
+	handler.setLevel(logging.DEBUG)
 	handler.setFormatter(Formatter('%(asctime)s %(levelname)s: %(message)s '
     '[in %(pathname)s:%(lineno)d]'))
 	app.logger.addHandler(handler)
