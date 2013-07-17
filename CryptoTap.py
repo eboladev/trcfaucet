@@ -304,11 +304,11 @@ def add():
 		app.logger.info("Error Detail: {0}".format(e))
 		return redirect(url_for('duplicate'))
 
-	#except:
+	except:
 		# ValueError and LookupError are raised on purpose, all other 
 		# errors  should be considered logical bugs
-		#app.logger.error("Unexplained Error: {0}".format(sys.exc_info()[0]))
-		#return redirect(url_for('bad'))
+		app.logger.error("Unexplained Error: {0}".format(sys.exc_info()[0]))
+		return redirect(url_for('bad'))
 
 # submission result pages
 @app.route('/good')
