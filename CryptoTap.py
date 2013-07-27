@@ -18,12 +18,8 @@ from logging import Formatter
 from logging.handlers import RotatingFileHandler
 
 
-# Global Configs ---------------------------------------------------------------
-DATABASE_INIT = 'schema.sql'
-
 # Load Flask -------------------------------------------------------------------
 app = Flask(__name__)
-#app.config.from_object(__name__)
 app.config.from_pyfile('settings.cfg')
 
 
@@ -166,16 +162,19 @@ class DripRequest:
 		last_req = last_request(self.ip)
 		app.logger.debug("last_req:" + str(last_req))
 
+		# testing address - remove before production
 		if self.address == '12Ai7QavwJbLcPL5XS276fkYZpXPXTPFC7':
 			self.save_db()
 		elif last_req >= app.config['REQUEST_TIME_LIMIT']:
 			app.logger.info('Last Submit Time: '.format(last_req))
 			self.save_db()
-		else: # last_req < 60
-			print(last_req)
+		elif num_address >= app.config['MAX_DRIPS']:
+			raise LookupError("Reached MAX_DRIPS.")
+		elif num_ip >= app.config['MAX_DRIPS']:
+			raise LookupError("Reached MAX_DRIPS.")
+		else: # last_req < request time limit
 			self.time_left = app.config['REQUEST_TIME_LIMIT'] - last_req
-			raise LookupError("Last request less than 60 mins ago.")
-
+			raise LookupError("Timelimit error.")
 		return self
 
 	def send(self):
@@ -184,14 +183,18 @@ class DripRequest:
 
 # Helper Functions -------------------------------------------------------------
 def last_request(ip):
-	"""Return the number of minutes since the last drip request."""
+	"""Return the number of minutes since the last drip request by passed ip."""
 	query = "SELECT * FROM drip_request WHERE ip=? ORDER BY id DESC"
-	req_date = g.db.execute(query, (ip,)).fetchone()
-	#app.logger.debug(req_date)
-	if req_date == None:
+	last_req = g.db.execute(query, (ip,)).fetchone()
+
+	if last_req == None:
+		# if no listing found then this is probably the users first time using
+		# the faucet, so return the default time request limit + 1, so that the
+		# system will allow them a drip request
 		return int(app.config['REQUEST_TIME_LIMIT'] + 1)
 	else:
-		req_datetime = datetime.strptime(req_date[1], "%Y-%m-%d %H:%M:%S")
+		# convert database string to datetime
+		req_datetime = datetime.strptime(last_req[1], "%Y-%m-%d %H:%M:%S")
 		diff_time = datetime.now() - req_datetime
 		diff_time = divmod(diff_time.total_seconds(), 60)
 		return int(diff_time[0]) # minutes since last request
@@ -229,7 +232,7 @@ def get_index(form_submit_status = None):
 	"""Displays the default index page, or a success / error page."""
 	# generate and hash the captcha
 	captcha_raw = (randint(1, 15), randint(1, 15))
-	captcha = str(int(captcha_raw[0] + captcha_raw[1])).encode('utf-8')
+	captcha = str(int(captcha_raw[0] - captcha_raw[1])).encode('utf-8')
 	captcha_hash = hashlib.sha1(captcha).hexdigest()
 
 	# retrieve last drip requests
@@ -244,7 +247,8 @@ def get_index(form_submit_status = None):
 	stats = "{:,}".format(total_trans)
 
 	# find time since last drip request
-	last_req = app.config['REQUEST_TIME_LIMIT'] - last_request(str(request.remote_addr))
+	last_req = app.config['REQUEST_TIME_LIMIT']
+	last_req -= last_request(str(request.remote_addr))
 
 	# pass all data to the template for rendering
 	return render_template('index.html', recent=recent,
@@ -259,10 +263,10 @@ def get_coupons_html(access_key, coup_value, max_use):
 
 def get_coupons():
 	query = 'SELECT * FROM coupon_list'
-	coupons = g.db.execute(query)
-	coupons = [get_coupons_html(row[3], row[1], row[2]) for row in coupons.fetchall()]
-	coupons = ''.join(map(str, coupons))
-	return render_template('coupons.html', coupons=coupons)
+	c = g.db.execute(query)
+	c = [get_coupons_html(row[3], row[1], row[2]) for row in c.fetchall()]
+	c = ''.join(map(str, c))
+	return render_template('coupons.html', coupons=c)
 
 # Routes -----------------------------------------------------------------------
 @app.route('/')
